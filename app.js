@@ -528,6 +528,57 @@
     if (abilityPoolCount) abilityPoolCount.textContent = String(getAbilityPool().length);
   };
 
+  // Spark particle + suit flash effect for ability draw
+  const spawnSparks = (container, suit) => {
+    // Remove old sparks
+    const old = container.querySelector(".spark-container");
+    if (old) old.remove();
+    const oldFlash = container.querySelector(".ability-suit-flash");
+    if (oldFlash) oldFlash.remove();
+    container.classList.remove("dealing-glow");
+
+    const sparkBox = document.createElement("div");
+    sparkBox.className = "spark-container";
+
+    const isRed = suit === "heart" || suit === "diamond";
+    const colors = isRed ? ["red", "red", "gold", "white"] : ["gold", "gold", "white", "red"];
+    const suitChars = { spade: "\u2660", heart: "\u2665", diamond: "\u2666", club: "\u2663" };
+
+    // Create 22 sparks
+    for (let i = 0; i < 22; i++) {
+      const spark = document.createElement("span");
+      const angle = (Math.PI * 2 * i) / 22 + (Math.random() - .5) * .6;
+      const dist = 60 + Math.random() * 120;
+      const x = Math.cos(angle) * dist;
+      const y = Math.sin(angle) * dist;
+      spark.className = `spark ${i % 3 === 0 ? "streak" : ""} ${colors[i % colors.length]}`;
+      spark.style.setProperty("--spark-x", `${x}px`);
+      spark.style.setProperty("--spark-y", `${y}px`);
+      spark.style.setProperty("--spark-dur", `${.45 + Math.random() * .4}s`);
+      spark.style.setProperty("--spark-delay", `${Math.random() * .15}s`);
+      if (i % 3 === 0) spark.style.transform = `rotate(${angle}rad)`;
+      sparkBox.appendChild(spark);
+    }
+    container.appendChild(sparkBox);
+
+    // Suit symbol flash
+    const flash = document.createElement("span");
+    flash.className = `ability-suit-flash ${isRed ? "red" : "gold"}`;
+    flash.textContent = suitChars[suit] || "\u2660";
+    container.appendChild(flash);
+
+    // Glow
+    void container.offsetWidth;
+    container.classList.add("dealing-glow");
+
+    // Cleanup after animation
+    setTimeout(() => {
+      sparkBox.remove();
+      flash.remove();
+      container.classList.remove("dealing-glow");
+    }, 900);
+  };
+
   const renderAbility = ability => {
     if (!ability || !abilityResult) return;
     currentAbility = ability;
@@ -535,6 +586,7 @@
     abilityResult.classList.remove("dealt");
     void abilityResult.offsetWidth;
     abilityResult.classList.add("dealt");
+    spawnSparks(abilityResult, ability.type);
     abilityCode.textContent = `${ability.code} · UNREGISTERED FILE`;
     abilitySuit.textContent = ability.suit;
     abilityCategory.textContent = abilitySuitNames[ability.type] || "SIGIL TYPE / 시질 계통";
@@ -543,7 +595,7 @@
     abilityEffect.textContent = ability.effect;
     abilityLimit.textContent = ability.limit;
     abilityBurst.textContent = ability.burst;
-    if (ability.pitch) { abilityPitch.textContent = "u201c" + ability.pitch + "u201d"; abilityPitch.hidden = false; } else { abilityPitch.textContent = ""; abilityPitch.hidden = true; }
+    if (ability.pitch) { abilityPitch.textContent = "\u201c" + ability.pitch + "\u201d"; abilityPitch.hidden = false; } else { abilityPitch.textContent = ""; abilityPitch.hidden = true; }
     abilityCopyStatus.textContent = "";
   };
 

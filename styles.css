@@ -408,7 +408,7 @@ code { color: var(--gold); }
   .site-nav { top:70px; padding-inline:17px; }
   .brand-copy small { display:none; }
   .hero { min-height:auto; padding-top:125px; padding-bottom:80px; }
-  .hero h1 { font-size:54px; }
+  .hero h1 { font-size:clamp(36px, 11vw, 50px); }
   .hero-summary { font-size:13px; }
   .countdown { grid-template-columns:repeat(2,1fr); }
   .section-heading.horizontal { display:block; }
@@ -933,8 +933,9 @@ section,
 
   .hero h1 {
     max-width: 100%;
-    font-size: clamp(44px, 14vw, 60px);
+    font-size: clamp(36px, 11vw, 50px);
     overflow-wrap: normal;
+    letter-spacing: -.03em;
   }
 
   .hero-lead,
@@ -985,7 +986,7 @@ section,
   }
 
   .hero h1 {
-    font-size: clamp(40px, 13.5vw, 50px);
+    font-size: clamp(32px, 10.5vw, 42px);
   }
 }
 
@@ -1361,4 +1362,144 @@ section,
 @media (max-width: 680px) {
   .faction-characters { padding: 22px; }
   .faction-characters-head { flex-direction: column; align-items: flex-start; }
+}
+
+/* --- Mobile hero typography refinement ----------------- */
+@media (max-width: 680px) {
+  .hero-lead {
+    font-size: clamp(16px, 4.2vw, 20px);
+    margin-top: 20px;
+  }
+  .hero-summary {
+    font-size: 12.5px;
+    line-height: 1.7;
+  }
+  .hero-copy {
+    max-width: 100%;
+  }
+  .hero-actions {
+    margin-top: 26px;
+  }
+  .section-heading h2 {
+    font-size: clamp(32px, 9vw, 48px);
+  }
+  .closing h2 {
+    font-size: clamp(34px, 10vw, 56px);
+  }
+}
+
+/* ============================================================
+   ABILITY DRAW — DRAMATIC CARD + SPARK ANIMATION
+   ============================================================ */
+
+/* Upgraded card flip */
+@keyframes abilityDeal {
+  0%   { opacity: 0; transform: perspective(900px) rotateY(90deg) scale(.85); filter: brightness(2.5); }
+  35%  { opacity: 1; transform: perspective(900px) rotateY(-12deg) scale(1.03); filter: brightness(1.4); }
+  60%  { transform: perspective(900px) rotateY(5deg) scale(1); filter: brightness(1.1); }
+  100% { opacity: 1; transform: perspective(900px) rotateY(0) scale(1); filter: brightness(1); }
+}
+.ability-result.dealt {
+  animation: abilityDeal .6s cubic-bezier(.22,.68,.36,1.2) both;
+}
+
+/* Glow flash behind card on deal */
+.ability-result.dealing-glow::after {
+  content: "";
+  position: absolute;
+  inset: -40px;
+  z-index: 0;
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+  animation: abilityGlow .7s ease-out both;
+}
+.ability-result[data-suit="spade"].dealing-glow::after,
+.ability-result[data-suit="club"].dealing-glow::after {
+  background: radial-gradient(circle, rgba(210,174,99,.35), transparent 65%);
+}
+.ability-result[data-suit="heart"].dealing-glow::after,
+.ability-result[data-suit="diamond"].dealing-glow::after {
+  background: radial-gradient(circle, rgba(226,61,80,.3), transparent 65%);
+}
+@keyframes abilityGlow {
+  0%   { opacity: 0; transform: scale(.4); }
+  30%  { opacity: 1; }
+  100% { opacity: 0; transform: scale(1.6); }
+}
+
+/* Spark particles */
+.spark-container {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+  overflow: visible;
+}
+.spark {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  opacity: 0;
+  animation: sparkShoot var(--spark-dur, .7s) var(--spark-delay, 0s) ease-out both;
+  top: 50%;
+  left: 50%;
+}
+.spark.gold  { background: var(--gold); box-shadow: 0 0 6px var(--gold), 0 0 12px rgba(210,174,99,.5); }
+.spark.red   { background: var(--red-bright); box-shadow: 0 0 6px var(--red-bright), 0 0 12px rgba(226,61,80,.5); }
+.spark.white { background: #fff; box-shadow: 0 0 5px #fff, 0 0 10px rgba(255,255,255,.4); }
+
+@keyframes sparkShoot {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+  60% {
+    opacity: .8;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--spark-x, 80px), var(--spark-y, -60px)) scale(0);
+  }
+}
+
+/* Streak / trail sparks (elongated) */
+.spark.streak {
+  width: 2px;
+  height: 8px;
+  border-radius: 1px;
+  transform-origin: center center;
+}
+
+/* Suit symbol flash */
+.ability-suit-flash {
+  position: absolute;
+  z-index: 5;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  font-family: Georgia, serif;
+  font-size: 180px;
+  line-height: 1;
+  pointer-events: none;
+  opacity: 0;
+  animation: suitFlash .65s ease-out both;
+}
+.ability-suit-flash.gold  { color: var(--gold); text-shadow: 0 0 40px rgba(210,174,99,.6); }
+.ability-suit-flash.red   { color: var(--red-bright); text-shadow: 0 0 40px rgba(226,61,80,.6); }
+
+@keyframes suitFlash {
+  0%   { opacity: .8; transform: translate(-50%, -50%) scale(.3) rotate(-8deg); }
+  30%  { opacity: .5; transform: translate(-50%, -50%) scale(1.1) rotate(3deg); }
+  100% { opacity: 0;  transform: translate(-50%, -50%) scale(1.5) rotate(0deg); }
+}
+
+/* Hide sparks when prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .spark-container,
+  .ability-suit-flash,
+  .ability-result.dealing-glow::after {
+    display: none !important;
+  }
 }
