@@ -1028,3 +1028,337 @@ section,
     box-shadow: 0 26px 70px rgba(0, 0, 0, .72);
   }
 }
+
+
+/* ============================================================
+   COMPREHENSIVE OVERHAUL — Usability + Visual
+   ============================================================ */
+
+/* --- A. Hero decorative card suits ----------------------- */
+.hero-deco {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+.hero-suit {
+  position: absolute;
+  font-family: Georgia, serif;
+  line-height: 1;
+  opacity: 0;
+  animation: heroSuitIn 1.6s ease forwards;
+}
+.hero-suit-1 {
+  right: 6%;
+  top: 18%;
+  font-size: clamp(180px, 22vw, 340px);
+  color: var(--gold);
+  opacity: 0;
+  animation-delay: .3s;
+}
+.hero-suit-2 {
+  right: 22%;
+  bottom: 12%;
+  font-size: clamp(90px, 11vw, 160px);
+  color: var(--red-bright);
+  opacity: 0;
+  animation-delay: .6s;
+}
+.hero-suit-3 {
+  right: 38%;
+  top: 32%;
+  font-size: clamp(60px, 7vw, 100px);
+  color: var(--gold-soft);
+  opacity: 0;
+  animation-delay: .9s;
+}
+@keyframes heroSuitIn {
+  from { opacity: 0; transform: translateY(20px) scale(.92); }
+  to   { opacity: .06; transform: none; }
+}
+
+/* --- B. Reduce fixed ticker visual weight ---------------- */
+.ticker.top-ticker {
+  height: 36px;
+}
+:root {
+  --ticker-height: 36px;
+}
+
+/* --- C. Clickable progress bar --------------------------- */
+.progress {
+  height: 6px;
+  cursor: pointer;
+  position: relative;
+  border-radius: 3px;
+}
+.progress:hover {
+  background: rgba(243,238,229,.18);
+}
+
+/* --- D. Gallery items — clearer click affordance --------- */
+.gallery-item {
+  cursor: pointer;
+}
+.gallery-item::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border: 2px solid transparent;
+  transition: border-color .25s;
+  pointer-events: none;
+}
+.gallery-item:hover::before,
+.gallery-item:focus-visible::before {
+  border-color: var(--gold);
+}
+.gallery-caption em {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 8px;
+  padding: 4px 9px;
+  border: 1px solid var(--line-gold);
+  background: rgba(210,174,99,.1);
+  color: var(--gold);
+  font-size: 9px;
+  font-style: normal;
+  letter-spacing: .12em;
+  transition: background .2s;
+}
+.gallery-item:hover .gallery-caption em {
+  background: rgba(210,174,99,.22);
+}
+
+/* --- E. Section padding — tighter ----------------------- */
+.section-block {
+  padding: 100px 0;
+}
+@media (max-width: 680px) {
+  .section-block {
+    padding: 70px 0;
+  }
+}
+
+/* --- F. Floating back-to-top button ---------------------- */
+.fab-top {
+  position: fixed;
+  z-index: 100;
+  right: 22px;
+  bottom: 22px;
+  width: 48px;
+  height: 54px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border: 1px solid var(--line-gold);
+  background: rgba(13,11,15,.92);
+  backdrop-filter: blur(12px);
+  color: var(--gold);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: .12em;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity .3s, transform .3s, border-color .2s, background .2s;
+  pointer-events: none;
+}
+.fab-top[hidden] { display: none; }
+.fab-top.visible {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+.fab-top:hover {
+  border-color: var(--gold);
+  background: rgba(210,174,99,.15);
+}
+.fab-top span {
+  font-size: 14px;
+  line-height: 1;
+}
+
+/* --- G. Modal close button — inside modal --------------- */
+.modal-close {
+  position: sticky;
+  z-index: 4;
+  top: 12px;
+  float: right;
+  margin: 12px 12px 0 0;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line);
+  background: rgba(8,7,10,.85);
+  backdrop-filter: blur(8px);
+  color: var(--ink);
+  font-size: 26px;
+  cursor: pointer;
+  transition: border-color .2s, background .2s;
+}
+.modal-close:hover {
+  border-color: var(--gold);
+  background: rgba(210,174,99,.15);
+}
+.lightbox .modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  float: none;
+}
+
+/* --- H. (covered by hero-deco above) -------------------- */
+
+/* --- I. Suit-specific lore card gradients ---------------- */
+.lore-card:has(.suit-spade) {
+  background: linear-gradient(145deg, rgba(210,174,99,.08), rgba(255,255,255,.008));
+  border-color: rgba(210,174,99,.18);
+}
+.lore-card:has(.suit-heart) {
+  background: linear-gradient(145deg, rgba(226,61,80,.1), rgba(255,255,255,.008));
+  border-color: rgba(226,61,80,.18);
+}
+.lore-card:has(.suit-diamond) {
+  background: linear-gradient(145deg, rgba(230,140,50,.08), rgba(255,255,255,.008));
+  border-color: rgba(230,140,50,.18);
+}
+.lore-card:has(.suit-club) {
+  background: linear-gradient(145deg, rgba(100,180,190,.07), rgba(255,255,255,.008));
+  border-color: rgba(100,180,190,.16);
+}
+
+/* --- J. Burst track color progression ------------------- */
+.burst-track li:nth-child(1) span { color: var(--gold); }
+.burst-track li:nth-child(2) span { color: #d4a24a; }
+.burst-track li:nth-child(3) span { color: #d07a3e; }
+.burst-track li:nth-child(4) span { color: #cc4f3a; }
+.burst-track li:nth-child(5) span { color: var(--red-bright); }
+.burst-track li:nth-child(1) { border-bottom-color: rgba(210,174,99,.25); }
+.burst-track li:nth-child(2) { border-bottom-color: rgba(212,162,74,.25); }
+.burst-track li:nth-child(3) { border-bottom-color: rgba(208,122,62,.25); }
+.burst-track li:nth-child(4) { border-bottom-color: rgba(204,79,58,.25); }
+.burst-track li:nth-child(5) { border-bottom-color: rgba(226,61,80,.30); }
+.burst-track li:nth-child(5) {
+  background: linear-gradient(90deg, rgba(226,61,80,.08), transparent 60%);
+}
+
+/* --- K. Character card suit-colored bottom accent ------- */
+.character-card[data-suit="spade"]  { border-bottom: 2px solid rgba(210,174,99,.35); }
+.character-card[data-suit="heart"]  { border-bottom: 2px solid rgba(226,61,80,.35); }
+.character-card[data-suit="diamond"]{ border-bottom: 2px solid rgba(230,140,50,.35); }
+.character-card[data-suit="club"]   { border-bottom: 2px solid rgba(100,180,190,.35); }
+
+/* --- L. Ability card flip animation --------------------- */
+@keyframes abilityDeal {
+  0%   { opacity: 0; transform: perspective(800px) rotateY(90deg) scale(.92); }
+  50%  { opacity: .7; transform: perspective(800px) rotateY(-8deg) scale(1.01); }
+  100% { opacity: 1; transform: perspective(800px) rotateY(0deg) scale(1); }
+}
+.ability-result.dealt {
+  animation: abilityDeal .5s ease both;
+}
+
+/* --- M. Closing section — decorative card scatter ------- */
+.closing {
+  position: relative;
+  overflow: hidden;
+}
+.closing::before,
+.closing::after {
+  position: absolute;
+  font-family: Georgia, serif;
+  pointer-events: none;
+  opacity: .04;
+}
+.closing::before {
+  content: "♠";
+  font-size: 280px;
+  left: -40px;
+  bottom: -60px;
+  transform: rotate(-18deg);
+  color: var(--gold);
+}
+.closing::after {
+  content: "♥";
+  font-size: 200px;
+  right: -20px;
+  top: -30px;
+  transform: rotate(12deg);
+  color: var(--red-bright);
+}
+
+/* --- NAV BUG FIX: nav now sibling of header ------------- */
+.site-nav {
+  z-index: 1100;
+}
+@media (max-width: 980px) {
+  .site-nav {
+    z-index: 1100;
+  }
+}
+
+/* --- HERO mobile suit scaling --------------------------- */
+@media (max-width: 680px) {
+  .hero-suit-1 { right: -8%; top: 10%; font-size: 180px; }
+  .hero-suit-2 { right: 12%; bottom: 18%; font-size: 80px; }
+  .hero-suit-3 { display: none; }
+  .fab-top { right: 16px; bottom: 16px; }
+}
+
+/* --- Faction-Character merged panel -------------------- */
+.faction-card.has-members { cursor: pointer; }
+.faction-card.faction-active {
+  border-color: var(--gold);
+  background: linear-gradient(160deg, rgba(210,174,99,.08), transparent 60%);
+}
+
+.faction-characters {
+  scroll-margin-top: calc(var(--header-height) + var(--ticker-height) + 18px);
+  margin-top: 32px;
+  padding: 34px;
+  border: 1px solid var(--line-gold);
+  background: linear-gradient(180deg, rgba(255,255,255,.018), rgba(255,255,255,.005));
+}
+.faction-characters[hidden] { display: none; }
+.faction-characters-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 12px;
+}
+.faction-characters-head h3 {
+  margin: 4px 0 0;
+  font-family: Georgia, serif;
+  font-size: clamp(32px, 5vw, 56px);
+  line-height: 1;
+  font-weight: 400;
+}
+.faction-characters-close {
+  border: 1px solid var(--line);
+  background: transparent;
+  padding: 10px 14px;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .13em;
+  transition: border-color .2s, color .2s;
+}
+.faction-characters-close:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+.faction-characters-hint {
+  margin: 0 0 24px;
+  color: var(--muted);
+  font-size: 11px;
+}
+@media (max-width: 680px) {
+  .faction-characters { padding: 22px; }
+  .faction-characters-head { flex-direction: column; align-items: flex-start; }
+}

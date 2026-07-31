@@ -14,24 +14,29 @@
   <div class="ambient ambient-a" aria-hidden="true"></div>
   <div class="ambient ambient-b" aria-hidden="true"></div>
 
-  <header class="site-header" id="top">
+  <div id="top" style="position:absolute;top:0;left:0;height:0;width:0;" aria-hidden="true"></div>
+  <header class="site-header">
     <a class="brand" href="#top" aria-label="Six Spirits 홈">
       <span class="brand-mark">6</span>
       <span class="brand-copy"><strong>SIX SPIRITS</strong><small id="brandSubtitle">식스 스피릿츠 프루프</small></span>
     </a>
     <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">MENU</button>
-    <nav class="site-nav" id="site-nav" aria-label="주요 메뉴">
-      <a href="#world">WORLD / 세계관</a>
-      <a href="#factions">FACTIONS / 세력</a>
-      <a href="#characters">CHARACTERS / 캐릭터</a>
-      <a href="#soundtrack">BGM / 음악</a>
-      <a href="#ability-generator">ABILITY DRAW / 능력 뽑기</a>
-      <a href="#gallery">GALLERY / 갤러리</a>
-    </nav>
   </header>
+  <nav class="site-nav" id="site-nav" aria-label="주요 메뉴">
+    <a href="#world">WORLD / 세계관</a>
+    <a href="#factions">FACTIONS / 세력</a>
+    <a href="#soundtrack">BGM / 음악</a>
+    <a href="#ability-generator">ABILITY DRAW / 능력 뽑기</a>
+    <a href="#gallery">GALLERY / 갤러리</a>
+  </nav>
 
   <main>
     <section class="hero section-shell" aria-labelledby="hero-title">
+      <div class="hero-deco" aria-hidden="true">
+        <span class="hero-suit hero-suit-1">♠</span>
+        <span class="hero-suit hero-suit-2">♦</span>
+        <span class="hero-suit hero-suit-3">♣</span>
+      </div>
       <div class="hero-copy reveal">
         <p class="eyebrow" id="heroEyebrow">CASHOUT NIGHT · 캐시아웃 나이트 · 매년 1월 27일 · 00:00—06:00</p>
         <h1 id="hero-title">THE HOUSE<br><em>ALWAYS</em> WINS.</h1>
@@ -59,11 +64,11 @@
           <h2 id="quickBriefTitle">처음 보는 사람을 위한<br>핵심 다섯 가지.</h2>
         </div>
         <ol>
-          <li><strong>딜러</strong><span>하우스에 등록된 이능력자. 전적과 킬 누적에 따라 브론즈·실버·골드·플래티넘·다이아몬드로 분류된다.</span></li>
-          <li><strong>마크</strong><span>비능력자와 미등록자를 낮춰 부르는 말.</span></li>
-          <li><strong>칩</strong><span>화폐이자 등록권이며, 보호와 통제의 수단.</span></li>
-          <li><strong>버스트</strong><span>능력 과부하가 몸과 판단을 침식하는 상태.</span></li>
-          <li><strong>캐시아웃</strong><span>매년 여섯 시간 동안 열리는 강제 생존전.</span></li>
+          <li><strong>딜러</strong><span>하우스에 등록된 이능력자. 전적과 킬에 따라 브론즈·실버·골드·플래티넘·다이아몬드로 나뉜다.</span></li>
+          <li><strong>마크</strong><span>능력 없는 사람, 또는 미등록자를 낮춰 부르는 말.</span></li>
+          <li><strong>칩</strong><span>화폐이자 등록권. 보호와 통제가 동시에 걸린 수단.</span></li>
+          <li><strong>버스트</strong><span>능력 과부하로 몸과 판단이 무너지는 상태.</span></li>
+          <li><strong>캐시아웃</strong><span>해마다 여섯 시간 동안 열리는 강제 생존전.</span></li>
         </ol>
       </div>
 
@@ -104,13 +109,13 @@
       <div class="system-board reveal">
         <div class="system-title">
           <p class="eyebrow">BURST PROTOCOL / 버스트 프로토콜</p>
-          <h3>힘을 쓸수록,<br>결국 힘이 당신을 쓴다.</h3>
+          <h3>힘을 쓸수록,<br>결국 힘이 널 쓴다.</h3>
         </div>
         <ol class="burst-track">
-          <li><span>01</span><strong>시질 발열</strong><small>손등의 문양이 뜨거워진다.</small></li>
-          <li><span>02</span><strong>손떨림</strong><small>정밀도와 판단이 흔들린다.</small></li>
-          <li><span>03</span><strong>코피</strong><small>신체가 대가를 청구한다.</small></li>
-          <li><span>04</span><strong>감각왜곡</strong><small>현실과 능력의 경계가 무너진다.</small></li>
+          <li><span>01</span><strong>시질 발열</strong><small>손등 문양이 뜨거워진다.</small></li>
+          <li><span>02</span><strong>손떨림</strong><small>정밀도와 판단력이 흔들린다.</small></li>
+          <li><span>03</span><strong>코피</strong><small>몸이 대가를 청구하기 시작한다.</small></li>
+          <li><span>04</span><strong>감각 왜곡</strong><small>현실과 능력의 경계가 녹는다.</small></li>
           <li><span>05</span><strong>폭주</strong><small>능력이 주인을 집어삼킨다.</small></li>
         </ol>
       </div>
@@ -119,7 +124,7 @@
         <div class="cashout-time"><span>00:00</span><i></i><span>06:00</span></div>
         <div>
           <p class="eyebrow">CASHOUT NIGHT / 캐시아웃 나이트</p>
-          <h3>합법적 폭력. 강제 참여. 공개 관전.</h3>
+          <h3>합법 폭력. 강제 참가. 공개 관전.</h3>
           <p id="cashoutText">매년 1월 27일, 베가스 전역에서 딜러는 사냥꾼이자 표적이 된다. 회수한 칩은 랭킹이 되고, 일부는 반드시 하우스에 레이크로 상납된다.</p>
         </div>
       </div>
@@ -144,43 +149,22 @@
     <section class="section-block faction-section" id="factions" aria-labelledby="factions-title">
       <div class="section-shell">
         <div class="section-heading horizontal reveal">
-          <div><p class="eyebrow">02 · FACTIONS / 세력</p><h2 id="factions-title">EVERY SIDE<br>HAS A PRICE.</h2></div>
+          <div><p class="eyebrow">02 · FACTIONS &amp; CHARACTERS / 세력과 캐릭터</p><h2 id="factions-title">EVERY SIDE<br>HAS A PRICE.</h2></div>
           <p id="factionsIntro">질서, 자유, 생존, 신앙. 이름은 달라도 각 세력은 저마다의 방식으로 사람을 붙잡고 소유하려 한다.</p>
         </div>
         <div class="filter-row reveal" id="factionFilters" aria-label="세력 필터"></div>
         <div class="faction-grid" id="factionGrid"></div>
-      </div>
-    </section>
 
-    <section class="section-shell section-block" id="characters" aria-labelledby="characters-title">
-      <div class="section-heading horizontal reveal">
-        <div><p class="eyebrow">03 · CHARACTERS / 캐릭터</p><h2 id="characters-title">THE PLAYERS<br>AT THE TABLE.</h2></div>
-        <p id="charactersIntro">카드를 뒤집기 전까지 누구도 진짜 패를 보여주지 않는다. 캐릭터 카드를 누르면 세부 프로필을 확인할 수 있다.</p>
-      </div>
-      <div class="character-tabs reveal" id="characterTabs" role="tablist" aria-label="캐릭터 그룹"></div>
-      <div class="character-grid" id="characterGrid"></div>
-
-      <div class="relationship-board reveal">
-        <div class="relationship-head">
-          <p class="eyebrow">TEAM DYNAMICS / 관계</p>
-          <h3>여섯 명은 한 팀이지만,<br>모두 같은 방식으로 믿지는 않는다.</h3>
-        </div>
-        <div class="relationship-columns">
-          <article>
-            <span>BOURBON TRIO / 버번 트리오</span>
-            <h4>케일라 · 재키 · 엘리아</h4>
-            <p>유대, 무력, 수성. 케일라와 엘리아는 자매 같은 신뢰를, 케일라와 재키는 등을 맡길 믿음을, 엘리아와 재키는 오래된 친구의 습관을 공유한다.</p>
-          </article>
-          <article>
-            <span>VODKA TRIO / 보드카 트리오</span>
-            <h4>아드리엔 · 미케일라 · 마리아</h4>
-            <p>개인주의, 정보, 공세. 차가운 존중과 피곤한 동료애, 말로 설명하지 않는 동질감이 세 사람을 묶는다.</p>
-          </article>
-          <article class="relationship-wide">
-            <span>CROSS-TABLE / 교차 관계</span>
-            <h4>일상에서는 미스매치, 전투에서는 단일팀.</h4>
-            <p>케일라와 아드리엔의 알파 충돌, 재키와 마리아의 카오스, 엘리아와 아드리엔의 서로 다른 통제, 미케일라가 이어 붙이는 정밀함. 사적인 긴장은 말이 아니라 행동에만 샌다.</p>
-          </article>
+        <div class="faction-characters" id="factionCharacters" hidden>
+          <div class="faction-characters-head">
+            <div>
+              <p class="eyebrow">MEMBERS / 소속 인원</p>
+              <h3 id="factionCharactersTitle"></h3>
+            </div>
+            <button type="button" class="faction-characters-close" id="closeFactionCharacters">CLOSE / 닫기</button>
+          </div>
+          <p class="faction-characters-hint">캐릭터 카드를 눌러 세부 프로필을 확인하세요.</p>
+          <div class="character-grid" id="characterGrid"></div>
         </div>
       </div>
     </section>
@@ -188,9 +172,9 @@
     <section class="soundtrack-section section-block" id="soundtrack" aria-labelledby="soundtrack-title">
       <div class="section-shell soundtrack-layout">
         <div class="section-heading reveal">
-          <p class="eyebrow">04 · BGM ARCHIVE / 음악 아카이브</p>
+          <p class="eyebrow">03 · BGM ARCHIVE / 음악 아카이브</p>
           <h2 id="soundtrack-title">SOUNDTRACK<br>FOR THE HUNT.</h2>
-          <p id="soundtrackIntro">BGM 파일 주소는 수정용 파일에 넣으면 된다. 직접 연결되는 MP3 주소를 사용하면 사이트 안에서 끊김 없이 재생된다.</p>
+          <p id="soundtrackIntro">식스 스피릿츠 캐시아웃의 오리지널 사운드트랙.</p>
         </div>
         <div class="player reveal">
           <div class="player-art" id="playerArt">
@@ -217,7 +201,7 @@
     <section class="ability-section section-block" id="ability-generator" aria-labelledby="ability-title">
       <div class="section-shell">
         <div class="section-heading horizontal reveal">
-          <div><p class="eyebrow">05 · ABILITY DRAW / 능력 뽑기</p><h2 id="ability-title">DRAW YOUR<br>SIGIL.</h2></div>
+          <div><p class="eyebrow">04 · ABILITY DRAW / 능력 뽑기</p><h2 id="ability-title">DRAW YOUR<br>SIGIL.</h2></div>
           <p id="abilityIntro">문양을 고르거나 전체 덱에서 뽑아 페르소나의 능력을 완성하세요. 효과뿐 아니라 제약과 버스트 위험까지 함께 생성됩니다.</p>
         </div>
 
@@ -242,13 +226,13 @@
             </div>
             <div class="ability-name">
               <p id="abilityCategory">SIGIL TYPE / 시질 계통</p>
-              <h3 id="abilityName">카드를 뽑아 능력을 확인하세요.</h3>
+              <h3 id="abilityName">카드를 뽑아 능력을 확인하세요</h3>
               <span id="abilityNameEn">DRAW YOUR FIRST CARD</span>
             </div>
             <dl class="ability-details">
-              <div><dt>EFFECT / 효과</dt><dd id="abilityEffect">능력의 핵심 효과가 표시됩니다.</dd></div>
-              <div><dt>LIMIT / 제약</dt><dd id="abilityLimit">강력한 효과에는 반드시 사용 조건이 붙습니다.</dd></div>
-              <div><dt>BURST RISK / 버스트 위험</dt><dd id="abilityBurst">과사용 시 나타나는 대가가 표시됩니다.</dd></div>
+              <div><dt>EFFECT / 효과</dt><dd id="abilityEffect">핵심 효과가 여기 표시됩니다.</dd></div>
+              <div><dt>LIMIT / 제약</dt><dd id="abilityLimit">강한 힘에는 반드시 조건이 붙습니다.</dd></div>
+              <div><dt>BURST RISK / 버스트 위험</dt><dd id="abilityBurst">과사용의 대가가 여기 표시됩니다.</dd></div>
             </dl>
             <blockquote id="abilityPitch">“힘을 고르는 게 아니다. 어떤 대가를 감당할지 고르는 것이다.”</blockquote>
             <div class="ability-actions">
@@ -263,7 +247,7 @@
 
     <section class="section-shell section-block" id="gallery" aria-labelledby="gallery-title">
       <div class="section-heading horizontal reveal">
-        <div><p class="eyebrow">06 · GALLERY / 갤러리</p><h2 id="gallery-title">EVIDENCE<br>FROM THE NIGHT.</h2></div>
+        <div><p class="eyebrow">05 · GALLERY / 갤러리</p><h2 id="gallery-title">EVIDENCE<br>FROM THE NIGHT.</h2></div>
         <p id="galleryIntro">대표 이미지를 선택하면 해당 캐릭터의 일반 이미지 아카이브가 바로 아래에 펼쳐진다. 아카이브에는 00~21과 50 코드만 표시된다.</p>
       </div>
       <div class="gallery-grid" id="galleryGrid"></div>
@@ -284,7 +268,7 @@
     <section class="closing section-block">
       <div class="section-shell closing-inner reveal">
         <p class="eyebrow" id="closingEyebrow">WELCOME TO PROOF / 프루프에 오신 것을 환영합니다</p>
-        <h2>KEEP YOUR GLOVES ON.<br>KEEP YOUR CHIPS CLOSE.</h2>
+        <h2>GLOVES ON.<br>CHIPS CLOSE.</h2>
         <a class="btn btn-primary" href="#top">BACK TO TOP / 맨 위로</a>
       </div>
     </section>
@@ -308,6 +292,10 @@
       <figcaption id="lightboxCaption"></figcaption>
     </figure>
   </dialog>
+
+  <button class="fab-top" id="fabTop" type="button" aria-label="맨 위로 이동" hidden>
+    <span>▲</span>TOP
+  </button>
 
   <script src="edit-content.js"></script>
   <script src="data.js"></script>

@@ -10,7 +10,7 @@
   const textBindings = {
     brandSubtitle: ["#brandSubtitle", false],
     heroEyebrow: ["#heroEyebrow", false],
-    heroLead: ["#heroLead", false],
+    heroLead: ["#heroLead", true],
     heroSummary: ["#heroSummary", true],
     quickBriefTitle: ["#quickBriefTitle", true],
     worldIntro: ["#worldIntro", false],
@@ -40,8 +40,10 @@
   const ticker = $(".ticker");
 
   // Keep the rotating world-guide ticker directly beneath the fixed header.
-  if (ticker && header && header.nextElementSibling !== ticker) {
-    header.insertAdjacentElement("afterend", ticker);
+  // Nav is now a sibling after header, so insert ticker after nav or header.
+  const tickerAnchor = siteNav || header;
+  if (ticker && tickerAnchor && tickerAnchor.nextElementSibling !== ticker) {
+    tickerAnchor.insertAdjacentElement("afterend", ticker);
   }
   if (ticker) ticker.classList.add("top-ticker");
 
@@ -99,21 +101,36 @@
       navLinks.forEach(link => link.classList.toggle("active", link.getAttribute("href") === `#${entry.target.id}`));
     });
   }, { rootMargin: "-35% 0px -55% 0px" });
-  ["world", "factions", "characters", "soundtrack", "ability-generator", "gallery"].forEach(id => {
+  ["world", "factions", "soundtrack", "ability-generator", "gallery"].forEach(id => {
     const section = document.getElementById(id);
     if (section) sectionObserver.observe(section);
   });
 
 
-  // Factions
+  // Factions + Characters (merged)
   const factionFilters = $("#factionFilters");
   const factionGrid = $("#factionGrid");
+  const factionCharacters = $("#factionCharacters");
+  const factionCharactersTitle = $("#factionCharactersTitle");
+  const characterGrid = $("#characterGrid");
+  const characterModal = $("#characterModal");
+  const modalCharacter = $("#modalCharacter");
+  const closeFactionCharacters = $("#closeFactionCharacters");
+
   const factionFilterLabels = {
-    all: "전체 / ALL",
-    independent: "독립 세력 / INDEPENDENT",
-    authority: "권력권 / AUTHORITY",
-    hostile: "적대 세력 / HOSTILE",
-    underground: "지하 세력 / UNDERGROUND"
+    all: "\uc804\uccb4 / ALL",
+    independent: "\ub3c5\ub9bd \uc138\ub825 / INDEPENDENT",
+    authority: "\uad8c\ub825\uad8c / AUTHORITY",
+    hostile: "\uc801\ub300 \uc138\ub825 / HOSTILE",
+    underground: "\uc9c0\ud558 \uc138\ub825 / UNDERGROUND"
+  };
+
+  const factionToCharGroup = {
+    "six-spirits": "six-spirits",
+    "house": "house",
+    "ledger": "house",
+    "red-chapel": "red-chapel",
+    "uncut": "uncut"
   };
 
   Object.entries(factionFilterLabels).forEach(([key, label], index) => {
@@ -125,21 +142,39 @@
     factionFilters.appendChild(button);
   });
 
+  const sortedFactions = [...data.factions].sort((a, b) => {
+    const aHas = data.characters.some(c => c.group === factionToCharGroup[a.id]);
+    const bHas = data.characters.some(c => c.group === factionToCharGroup[b.id]);
+    if (aHas && !bHas) return -1;
+    if (!aHas && bHas) return 1;
+    return 0;
+  });
+
+  let activeFactionId = null;
+
   const renderFactions = (filter = "all") => {
     factionGrid.innerHTML = "";
-    data.factions
-      .filter(faction => filter === "all" || faction.group === filter)
+    sortedFactions
+      .filter(f => filter === "all" || f.group === filter)
       .forEach((faction, index) => {
+        const charGroup = factionToCharGroup[faction.id];
+        const chars = data.characters.filter(c => c.group === charGroup);
+        const hasChars = chars.length > 0;
         const card = document.createElement("article");
-        card.className = `faction-card reveal${faction.featured ? " featured" : ""}`;
+        card.className = `faction-card reveal${faction.featured ? " featured" : ""}${hasChars ? " has-members" : ""}`;
         card.dataset.symbol = faction.symbol;
+        card.dataset.factionId = faction.id;
         card.innerHTML = `
           <span class="tag">${faction.tag}</span>
           <h3>${faction.name}<small> / ${faction.ko}</small></h3>
-          <p class="motto">“${faction.motto}”</p>
+          <p class="motto">\u201c${faction.motto}\u201d</p>
           <p>${faction.description}</p>
-          <footer><span>GOAL / 목표 · ${faction.goal}</span><span>${faction.relation}</span></footer>
+          <footer>
+            <span>GOAL / \ubaa9\ud45c \u00b7 ${faction.goal}</span>
+            <span>${hasChars ? chars.length + "\uba85 \uc18c\uc18d \u00b7 \ub20c\ub7ec\uc11c \ubcf4\uae30" : "\ub4f1\uc7a5 \uce90\ub9ad\ud130 \uc5c6\uc74c"}</span>
+          </footer>
         `;
+        if (activeFactionId === faction.id) card.classList.add("faction-active");
         factionGrid.appendChild(card);
         setTimeout(() => card.classList.add("visible"), index * 45);
       });
@@ -150,31 +185,32 @@
     const button = event.target.closest("button[data-filter]");
     if (!button) return;
     $$("button", factionFilters).forEach(btn => btn.classList.toggle("active", btn === button));
+    activeFactionId = null;
+    factionCharacters.hidden = true;
     renderFactions(button.dataset.filter);
   });
 
-  // Characters
-  const characterTabs = $("#characterTabs");
-  const characterGrid = $("#characterGrid");
-  const characterModal = $("#characterModal");
-  const modalCharacter = $("#modalCharacter");
-  const charGroups = [
-    ["all", "전체 / ALL PLAYERS"],
-    ["six-spirits", "식스 스피릿츠 / SIX SPIRITS"],
-    ["house", "하우스·렛저 / HOUSE · LEDGER"],
-    ["red-chapel", "레드 채플 / RED CHAPEL"],
-    ["uncut", "언컷 / UNCUT"]
-  ];
+  factionGrid.addEventListener("click", event => {
+    const card = event.target.closest(".faction-card");
+    if (!card) return;
+    const factionId = card.dataset.factionId;
+    const charGroup = factionToCharGroup[factionId];
+    const chars = data.characters.filter(c => c.group === charGroup);
+    if (!chars.length) return;
+    const faction = data.factions.find(f => f.id === factionId);
+    activeFactionId = factionId;
+    $$(".faction-card", factionGrid).forEach(c => c.classList.toggle("faction-active", c.dataset.factionId === factionId));
+    factionCharactersTitle.textContent = `${faction.ko} / ${faction.name}`;
+    renderCharacters(charGroup);
+    factionCharacters.hidden = false;
+    requestAnimationFrame(() => factionCharacters.scrollIntoView({ behavior: "smooth", block: "start" }));
+  });
 
-  charGroups.forEach(([key, label], index) => {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.textContent = label;
-    button.dataset.group = key;
-    button.role = "tab";
-    button.setAttribute("aria-selected", String(index === 0));
-    button.classList.toggle("active", index === 0);
-    characterTabs.appendChild(button);
+  closeFactionCharacters.addEventListener("click", () => {
+    factionCharacters.hidden = true;
+    activeFactionId = null;
+    $$(".faction-card", factionGrid).forEach(c => c.classList.remove("faction-active"));
+    factionGrid.scrollIntoView({ behavior: "smooth", block: "center" });
   });
 
   const portraitMarkup = character => {
@@ -185,9 +221,9 @@
       `;
     }
     return `
-      <div class="character-placeholder" aria-label="${character.ko} 이미지 준비 중">
+      <div class="character-placeholder" aria-label="${character.ko} \uc774\ubbf8\uc9c0 \uc900\ube44 \uc911">
         <span>${character.code}</span>
-        <small>PORTRAIT PENDING / 이미지 준비 중</small>
+        <small>PORTRAIT PENDING / \uc774\ubbf8\uc9c0 \uc900\ube44 \uc911</small>
       </div>
     `;
   };
@@ -215,13 +251,15 @@
         card.className = "character-card reveal";
         card.tabIndex = 0;
         card.dataset.character = character.id;
-        card.setAttribute("aria-label", `${character.ko} 상세 프로필 열기`);
+        const suitMap = {"\u2660":"spade","\u2665":"heart","\u2666":"diamond","\u2663":"club"};
+        card.dataset.suit = suitMap[character.suit] || "";
+        card.setAttribute("aria-label", `${character.ko} \uc0c1\uc138 \ud504\ub85c\ud544 \uc5f4\uae30`);
         card.innerHTML = `
           ${portraitMarkup(character)}
           <div class="character-card-content">
             <div class="character-card-top"><span class="rank-badge">${character.rank}</span><span class="character-code">FILE ${character.code}</span></div>
             <h3>${character.name}<small>${character.ko}</small></h3>
-            <p class="character-role">${character.role} · ${character.callSign}</p>
+            <p class="character-role">${character.role} \u00b7 ${character.callSign}</p>
             <p class="character-power">${character.suit} ${character.power}</p>
           </div>
         `;
@@ -230,18 +268,6 @@
         setTimeout(() => card.classList.add("visible"), index * 55);
       });
   };
-  renderCharacters();
-
-  characterTabs.addEventListener("click", event => {
-    const button = event.target.closest("button[data-group]");
-    if (!button) return;
-    $$("button", characterTabs).forEach(btn => {
-      const active = btn === button;
-      btn.classList.toggle("active", active);
-      btn.setAttribute("aria-selected", String(active));
-    });
-    renderCharacters(button.dataset.group);
-  });
 
   const openCharacter = id => {
     const character = data.characters.find(item => item.id === id);
@@ -416,6 +442,16 @@
     const duration = row ? $(".track-duration", row) : null;
     if (duration) duration.textContent = formatDuration(audio.duration);
   });
+  // Progress bar click-to-seek
+  const progressContainer = $(".progress");
+  if (progressContainer) {
+    progressContainer.addEventListener("click", event => {
+      if (!audio.duration) return;
+      const rect = progressContainer.getBoundingClientRect();
+      const ratio = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
+      audio.currentTime = ratio * audio.duration;
+    });
+  }
   audio.addEventListener("timeupdate", () => {
     if (!audio.duration) return;
     progressBar.style.width = `${(audio.currentTime / audio.duration) * 100}%`;
@@ -507,7 +543,7 @@
     abilityEffect.textContent = ability.effect;
     abilityLimit.textContent = ability.limit;
     abilityBurst.textContent = ability.burst;
-    abilityPitch.textContent = `“${ability.pitch}”`;
+    if (ability.pitch) { abilityPitch.textContent = "u201c" + ability.pitch + "u201d"; abilityPitch.hidden = false; } else { abilityPitch.textContent = ""; abilityPitch.hidden = true; }
     abilityCopyStatus.textContent = "";
   };
 
@@ -684,4 +720,18 @@
     galleryDetail.hidden = true;
     galleryGrid.scrollIntoView({ behavior: "smooth", block: "center" });
   });
+
+  // Floating back-to-top button
+  const fabTop = document.getElementById("fabTop");
+  if (fabTop) {
+    fabTop.hidden = false;
+    const syncFab = () => {
+      fabTop.classList.toggle("visible", window.scrollY > window.innerHeight);
+    };
+    syncFab();
+    window.addEventListener("scroll", syncFab, { passive: true });
+    fabTop.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  }
 })();
