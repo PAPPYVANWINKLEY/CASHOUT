@@ -37,19 +37,47 @@
   const header = $(".site-header");
   const menuToggle = $(".menu-toggle");
   const siteNav = $(".site-nav");
+  const ticker = $(".ticker");
+
+  // Keep the rotating world-guide ticker directly beneath the fixed header.
+  if (ticker && header && header.nextElementSibling !== ticker) {
+    header.insertAdjacentElement("afterend", ticker);
+  }
+  if (ticker) ticker.classList.add("top-ticker");
 
   const syncHeader = () => header.classList.toggle("scrolled", window.scrollY > 24);
   syncHeader();
   window.addEventListener("scroll", syncHeader, { passive: true });
 
-  menuToggle.addEventListener("click", () => {
-    const open = siteNav.classList.toggle("open");
+  const setMobileMenu = open => {
+    siteNav.classList.toggle("open", open);
+    document.body.classList.toggle("nav-open", open);
     menuToggle.setAttribute("aria-expanded", String(open));
+    menuToggle.textContent = open ? "CLOSE / 닫기" : "MENU / 목차";
+  };
+
+  setMobileMenu(false);
+
+  menuToggle.addEventListener("click", () => {
+    setMobileMenu(!siteNav.classList.contains("open"));
   });
+
   $$("a", siteNav).forEach(link => link.addEventListener("click", () => {
-    siteNav.classList.remove("open");
-    menuToggle.setAttribute("aria-expanded", "false");
+    setMobileMenu(false);
   }));
+
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && siteNav.classList.contains("open")) {
+      setMobileMenu(false);
+      menuToggle.focus();
+    }
+  });
+
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 980 && siteNav.classList.contains("open")) {
+      setMobileMenu(false);
+    }
+  });
 
   // Reveal animation
   const revealObserver = new IntersectionObserver(entries => {

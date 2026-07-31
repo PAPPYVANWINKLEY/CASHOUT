@@ -685,3 +685,181 @@ code { color: var(--gold); }
 @media (max-width: 640px) {
   .deep-link-play { right: 16px; bottom: 16px; }
 }
+
+
+/* ============================================================
+   MOBILE NAVIGATION + HEADER TICKER
+   ============================================================ */
+:root {
+  --header-height: 82px;
+  --ticker-height: 43px;
+}
+
+/* The rotating phrases now sit directly under the top brand bar. */
+.ticker.top-ticker {
+  position: fixed;
+  z-index: 39;
+  top: var(--header-height);
+  left: 0;
+  width: 100%;
+  height: var(--ticker-height);
+  background: rgba(13, 11, 15, .96);
+  border-top: 1px solid rgba(255,255,255,.035);
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(14px);
+}
+.ticker.top-ticker .ticker-track {
+  height: 100%;
+  padding: 0;
+}
+.ticker.top-ticker span {
+  font-size: 9px;
+}
+
+/* Make room for the fixed ticker and keep anchor jumps visible. */
+.hero {
+  padding-top: calc(118px + var(--ticker-height));
+}
+section[id],
+#quick-brief {
+  scroll-margin-top: calc(var(--header-height) + var(--ticker-height) + 18px);
+}
+
+@media (max-width: 980px) {
+  body.nav-open {
+    overflow: hidden;
+  }
+
+  .menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 116px;
+    min-height: 46px;
+    padding: 0 14px;
+    border-color: var(--line-gold);
+    background: rgba(210,174,99,.07);
+    color: var(--gold);
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: .1em;
+    cursor: pointer;
+  }
+
+  /* Large, touch-friendly menu panel under the header ticker. */
+  .site-nav {
+    position: fixed;
+    z-index: 38;
+    inset:
+      calc(var(--header-height) + var(--ticker-height))
+      0
+      0;
+    display: none;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-content: start;
+    gap: 10px;
+    padding: 18px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background:
+      radial-gradient(circle at 90% 0, rgba(186,36,53,.18), transparent 34%),
+      rgba(8,7,10,.985);
+    border-top: 1px solid var(--line-gold);
+    border-bottom: 0;
+    backdrop-filter: blur(20px);
+  }
+
+  .site-nav.open {
+    display: grid;
+  }
+
+  .site-nav a {
+    min-width: 0;
+    min-height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 10px;
+    border: 1px solid var(--line);
+    background: rgba(255,255,255,.022);
+    color: var(--ink);
+    font-size: 11px;
+    line-height: 1.35;
+    letter-spacing: .08em;
+    text-align: center;
+    white-space: normal;
+    transition: border-color .2s, background .2s, color .2s;
+  }
+
+  .site-nav a:hover,
+  .site-nav a:focus-visible,
+  .site-nav a.active {
+    border-color: var(--gold);
+    background: rgba(210,174,99,.11);
+    color: var(--gold);
+  }
+
+  .hero {
+    padding-top: calc(130px + var(--ticker-height));
+  }
+}
+
+@media (max-width: 680px) {
+  :root {
+    --header-height: 70px;
+    --ticker-height: 38px;
+  }
+
+  .ticker.top-ticker span {
+    font-size: 8px;
+    letter-spacing: .16em;
+  }
+
+  .ticker.top-ticker .ticker-track {
+    gap: 22px;
+  }
+
+  .menu-toggle {
+    min-width: 102px;
+    min-height: 42px;
+    padding-inline: 11px;
+    font-size: 9px;
+  }
+
+  .site-nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+    padding: 14px;
+  }
+
+  .site-nav a {
+    min-height: 60px;
+    padding: 10px 8px;
+    font-size: 10px;
+  }
+
+  .hero {
+    padding-top: calc(105px + var(--ticker-height));
+  }
+}
+
+@media (max-width: 360px) {
+  .brand-copy strong {
+    font-size: 11px;
+  }
+
+  .brand {
+    gap: 8px;
+  }
+
+  .brand-mark {
+    width: 30px;
+    height: 39px;
+    font-size: 22px;
+  }
+
+  .menu-toggle {
+    min-width: 92px;
+    padding-inline: 8px;
+  }
+}
