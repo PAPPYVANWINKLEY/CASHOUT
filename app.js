@@ -51,6 +51,7 @@
 
   const setMobileMenu = open => {
     siteNav.classList.toggle("open", open);
+    header.classList.toggle("menu-open", open);
     document.body.classList.toggle("nav-open", open);
     menuToggle.setAttribute("aria-expanded", String(open));
     menuToggle.textContent = open ? "CLOSE / 닫기" : "MENU / 목차";
@@ -103,28 +104,6 @@
     if (section) sectionObserver.observe(section);
   });
 
-  // Countdown: Jan 27, 00:00 in Las Vegas. January is UTC-8.
-  const countdownEls = {
-    days: $("#countDays"), hours: $("#countHours"), minutes: $("#countMinutes"), seconds: $("#countSeconds")
-  };
-  const getNextCashout = () => {
-    const now = new Date();
-    const year = now.getUTCFullYear();
-    let start = new Date(Date.UTC(year, 0, 27, 8, 0, 0));
-    const end = new Date(Date.UTC(year, 0, 27, 14, 0, 0));
-    if (now > end) start = new Date(Date.UTC(year + 1, 0, 27, 8, 0, 0));
-    return start;
-  };
-  const updateCountdown = () => {
-    const diff = Math.max(0, getNextCashout() - new Date());
-    const day = 86400000;
-    countdownEls.days.textContent = String(Math.floor(diff / day)).padStart(3, "0");
-    countdownEls.hours.textContent = String(Math.floor((diff % day) / 3600000)).padStart(2, "0");
-    countdownEls.minutes.textContent = String(Math.floor((diff % 3600000) / 60000)).padStart(2, "0");
-    countdownEls.seconds.textContent = String(Math.floor((diff % 60000) / 1000)).padStart(2, "0");
-  };
-  updateCountdown();
-  setInterval(updateCountdown, 1000);
 
   // Factions
   const factionFilters = $("#factionFilters");
