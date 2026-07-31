@@ -408,7 +408,7 @@ code { color: var(--gold); }
   .site-nav { top:70px; padding-inline:17px; }
   .brand-copy small { display:none; }
   .hero { min-height:auto; padding-top:125px; padding-bottom:80px; }
-  .hero h1 { font-size:clamp(36px, 11vw, 50px); }
+  .hero h1 { font-size:clamp(32px, 9vw, 44px); }
   .hero-summary { font-size:13px; }
   .countdown { grid-template-columns:repeat(2,1fr); }
   .section-heading.horizontal { display:block; }
@@ -933,7 +933,7 @@ section,
 
   .hero h1 {
     max-width: 100%;
-    font-size: clamp(36px, 11vw, 50px);
+    font-size: clamp(32px, 9vw, 44px);
     overflow-wrap: normal;
     letter-spacing: -.03em;
   }
@@ -986,7 +986,7 @@ section,
   }
 
   .hero h1 {
-    font-size: clamp(32px, 10.5vw, 42px);
+    font-size: clamp(28px, 8.5vw, 36px);
   }
 }
 
@@ -1367,139 +1367,289 @@ section,
 /* --- Mobile hero typography refinement ----------------- */
 @media (max-width: 680px) {
   .hero-lead {
-    font-size: clamp(16px, 4.2vw, 20px);
-    margin-top: 20px;
+    font-size: clamp(14px, 3.8vw, 18px);
+    margin-top: 18px;
+    line-height: 1.6;
   }
   .hero-summary {
-    font-size: 12.5px;
+    font-size: 12px;
     line-height: 1.7;
   }
   .hero-copy {
     max-width: 100%;
+    padding-right: 8px;
   }
   .hero-actions {
-    margin-top: 26px;
+    margin-top: 24px;
   }
   .section-heading h2 {
-    font-size: clamp(32px, 9vw, 48px);
+    font-size: clamp(30px, 8.5vw, 44px);
   }
   .closing h2 {
-    font-size: clamp(34px, 10vw, 56px);
+    font-size: clamp(30px, 9vw, 50px);
   }
 }
 
 /* ============================================================
-   ABILITY DRAW — DRAMATIC CARD + SPARK ANIMATION
+   ABILITY DRAW — CINEMATIC MP4 REVEAL
    ============================================================ */
 
-/* Upgraded card flip */
-@keyframes abilityDeal {
-  0%   { opacity: 0; transform: perspective(900px) rotateY(90deg) scale(.85); filter: brightness(2.5); }
-  35%  { opacity: 1; transform: perspective(900px) rotateY(-12deg) scale(1.03); filter: brightness(1.4); }
-  60%  { transform: perspective(900px) rotateY(5deg) scale(1); filter: brightness(1.1); }
-  100% { opacity: 1; transform: perspective(900px) rotateY(0) scale(1); filter: brightness(1); }
+/* Results open like a classified file after the cinematic ends. */
+.ability-result.file-reveal > .ability-card-top {
+  animation: abilityFileLine .28s .02s ease-out both;
 }
-.ability-result.dealt {
-  animation: abilityDeal .6s cubic-bezier(.22,.68,.36,1.2) both;
+.ability-result.file-reveal > .ability-name {
+  animation: abilityFileLine .34s .10s ease-out both;
+}
+.ability-result.file-reveal > .ability-details > div:nth-child(1) {
+  animation: abilityFileLine .30s .18s ease-out both;
+}
+.ability-result.file-reveal > .ability-details > div:nth-child(2) {
+  animation: abilityFileLine .30s .24s ease-out both;
+}
+.ability-result.file-reveal > .ability-details > div:nth-child(3) {
+  animation: abilityFileLine .30s .30s ease-out both;
+}
+.ability-result.file-reveal > blockquote {
+  animation: abilityFileLine .30s .36s ease-out both;
+}
+.ability-result.file-reveal > .ability-actions,
+.ability-result.file-reveal > .ability-copy-status {
+  animation: abilityFileLine .28s .42s ease-out both;
 }
 
-/* Glow flash behind card on deal */
-.ability-result.dealing-glow::after {
+@keyframes abilityFileLine {
+  from { opacity: 0; transform: translateY(9px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+body.ability-cinematic-open {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+.ability-cinematic-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: #050406;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .22s ease, visibility 0s linear .22s;
+}
+
+.ability-cinematic-overlay.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity .22s ease;
+}
+
+.ability-cinematic-overlay.ending {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .42s ease;
+}
+
+.ability-cinematic-frame {
+  position: relative;
+  width: 100vw;
+  aspect-ratio: 2160 / 926;
+  max-height: 100svh;
+  overflow: hidden;
+  background: #050406;
+  box-shadow: 0 0 80px rgba(0,0,0,.8);
+}
+
+.ability-cinematic-frame::after {
   content: "";
   position: absolute;
-  inset: -40px;
-  z-index: 0;
-  border-radius: 50%;
-  opacity: 0;
+  inset: 0;
   pointer-events: none;
-  animation: abilityGlow .7s ease-out both;
-}
-.ability-result[data-suit="spade"].dealing-glow::after,
-.ability-result[data-suit="club"].dealing-glow::after {
-  background: radial-gradient(circle, rgba(210,174,99,.35), transparent 65%);
-}
-.ability-result[data-suit="heart"].dealing-glow::after,
-.ability-result[data-suit="diamond"].dealing-glow::after {
-  background: radial-gradient(circle, rgba(226,61,80,.3), transparent 65%);
-}
-@keyframes abilityGlow {
-  0%   { opacity: 0; transform: scale(.4); }
-  30%  { opacity: 1; }
-  100% { opacity: 0; transform: scale(1.6); }
+  background:
+    linear-gradient(180deg, rgba(5,4,6,.22), transparent 20% 78%, rgba(5,4,6,.32)),
+    radial-gradient(ellipse at center, transparent 54%, rgba(5,4,6,.32) 100%);
 }
 
-/* Spark particles */
-.spark-container {
+.ability-cinematic-video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transform: scale(1.008);
+  transition: opacity .18s ease;
+}
+
+.ability-cinematic-overlay.playing .ability-cinematic-video {
+  opacity: 1;
+}
+
+.ability-cinematic-loader {
   position: absolute;
   inset: 0;
-  z-index: 10;
-  pointer-events: none;
-  overflow: visible;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  color: rgba(210,174,99,.65);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(42px, 7vw, 92px);
+  opacity: .72;
+  transition: opacity .18s ease;
 }
-.spark {
-  position: absolute;
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
+
+.ability-cinematic-overlay.playing .ability-cinematic-loader {
   opacity: 0;
-  animation: sparkShoot var(--spark-dur, .7s) var(--spark-delay, 0s) ease-out both;
-  top: 50%;
-  left: 50%;
-}
-.spark.gold  { background: var(--gold); box-shadow: 0 0 6px var(--gold), 0 0 12px rgba(210,174,99,.5); }
-.spark.red   { background: var(--red-bright); box-shadow: 0 0 6px var(--red-bright), 0 0 12px rgba(226,61,80,.5); }
-.spark.white { background: #fff; box-shadow: 0 0 5px #fff, 0 0 10px rgba(255,255,255,.4); }
-
-@keyframes sparkShoot {
-  0% {
-    opacity: 1;
-    transform: translate(0, 0) scale(1);
-  }
-  60% {
-    opacity: .8;
-  }
-  100% {
-    opacity: 0;
-    transform: translate(var(--spark-x, 80px), var(--spark-y, -60px)) scale(0);
-  }
 }
 
-/* Streak / trail sparks (elongated) */
-.spark.streak {
-  width: 2px;
-  height: 8px;
-  border-radius: 1px;
-  transform-origin: center center;
-}
-
-/* Suit symbol flash */
-.ability-suit-flash {
-  position: absolute;
-  z-index: 5;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  font-family: Georgia, serif;
-  font-size: 180px;
-  line-height: 1;
-  pointer-events: none;
+/* Keep the old file hidden while its replacement is being dealt. */
+.ability-result.staging > * {
   opacity: 0;
-  animation: suitFlash .65s ease-out both;
+  transition: opacity .14s ease-out;
 }
-.ability-suit-flash.gold  { color: var(--gold); text-shadow: 0 0 40px rgba(210,174,99,.6); }
-.ability-suit-flash.red   { color: var(--red-bright); text-shadow: 0 0 40px rgba(226,61,80,.6); }
-
-@keyframes suitFlash {
-  0%   { opacity: .8; transform: translate(-50%, -50%) scale(.3) rotate(-8deg); }
-  30%  { opacity: .5; transform: translate(-50%, -50%) scale(1.1) rotate(3deg); }
-  100% { opacity: 0;  transform: translate(-50%, -50%) scale(1.5) rotate(0deg); }
+.ability-result.staging {
+  animation: none !important;
 }
 
-/* Hide sparks when prefers-reduced-motion */
+@media (orientation: portrait) and (max-width: 900px) {
+  .ability-cinematic-frame {
+    width: 160vw;
+    max-width: 720px;
+  }
+}
+
+@media (max-width: 430px) {
+  .ability-cinematic-frame {
+    width: 168vw;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .spark-container,
-  .ability-suit-flash,
-  .ability-result.dealing-glow::after {
+  .ability-cinematic-overlay {
     display: none !important;
   }
+  .ability-result.file-reveal > * {
+    animation: none !important;
+  }
+}
+
+
+/* ============================================================
+   ABILITY DRAW — CARD FLIP CONFIRMATION AFTER MP4
+   ============================================================ */
+.draw-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  background: rgba(10, 9, 12, .82);
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  animation: drawOverlayIn .26s ease forwards;
+}
+@keyframes drawOverlayIn { to { opacity: 1; } }
+.draw-overlay.fade-out { animation: drawOverlayOut .38s ease forwards; }
+.draw-overlay.fade-out .draw-card { animation: drawCardExit .35s ease-in forwards; }
+@keyframes drawOverlayOut { to { opacity: 0; pointer-events: none; } }
+@keyframes drawCardExit { to { opacity: 0; transform: translateY(-18px) scale(.82); } }
+
+.draw-card {
+  width: 140px;
+  height: 196px;
+  perspective: 1200px;
+  opacity: 0;
+  transform: translate3d(0, 54px, 0) scale(.72);
+  animation: drawCardRise .62s cubic-bezier(.18,.72,.25,1) forwards;
+  filter: drop-shadow(0 22px 42px rgba(0,0,0,.58));
+  will-change: transform, opacity;
+}
+@keyframes drawCardRise {
+  from { opacity: 0; transform: translate3d(0, 54px, 0) scale(.72); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+}
+
+.draw-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transform: translateZ(0) rotateY(0deg);
+  will-change: transform;
+}
+.draw-card-inner.spinning {
+  animation: drawCardSpin 1.48s cubic-bezier(.16,.68,.18,1) forwards;
+}
+@keyframes drawCardSpin {
+  from { transform: translateZ(0) rotateY(0deg); }
+  to   { transform: translateZ(0) rotateY(1260deg); }
+}
+
+.draw-card-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(.1px);
+  border: 1px solid var(--line-gold);
+  display: grid;
+  place-items: center;
+}
+.draw-card-back {
+  background: repeating-conic-gradient(rgba(210,174,99,.06) 0% 25%, transparent 0% 50%) 0 0 / 12px 12px, linear-gradient(145deg, #1a1520, #0d0a10);
+  border: 1px solid var(--line-gold);
+}
+.draw-card-back::before {
+  content: '6';
+  font-family: Georgia, serif;
+  font-size: 42px;
+  color: var(--gold);
+  opacity: .35;
+}
+.draw-card-back::after {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border: 1px solid rgba(210,174,99,.15);
+}
+.draw-card-front {
+  transform: rotateY(180deg) translateZ(.1px);
+  background: linear-gradient(160deg, #f5f2ed, #e8e3da);
+  border-color: rgba(210,174,99,.35);
+}
+.draw-card-front::after {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border: 1px solid rgba(0,0,0,.08);
+}
+.draw-card-front .draw-suit-symbol { font-family: Georgia, serif; font-size: 72px; line-height: 1; }
+.draw-card-front .draw-suit-symbol.gold { color: #1a1520; text-shadow: 0 0 20px rgba(210,174,99,.4); }
+.draw-card-front .draw-suit-symbol.red  { color: var(--red); text-shadow: 0 0 20px rgba(226,61,80,.4); }
+.draw-card-front .corner-suit { position: absolute; font-family: Georgia, serif; font-size: 16px; line-height: 1; }
+.draw-card-front .corner-suit.gold { color: #1a1520; }
+.draw-card-front .corner-suit.red { color: var(--red); }
+.draw-card-front .corner-suit.tl { top: 10px; left: 10px; }
+.draw-card-front .corner-suit.br { bottom: 10px; right: 10px; transform: rotate(180deg); }
+
+.ability-result.staging > *:not(.draw-overlay) {
+  opacity: 0;
+  transition: opacity .16s;
+}
+.ability-result.staging { animation: none !important; }
+
+@media (max-width: 680px) {
+  .draw-card { width: 110px; height: 154px; }
+  .draw-card-front .draw-suit-symbol { font-size: 58px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .draw-overlay,
+  .draw-card,
+  .draw-card-inner.spinning { animation: none !important; }
+  .draw-card { opacity: 1; transform: none; }
 }

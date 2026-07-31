@@ -471,9 +471,10 @@
   const enterFloor = $("#enterFloor");
   if (enterFloor && bgmSettings.startOnEnter !== false) {
     enterFloor.addEventListener("click", () => {
-      const startIndex = Math.min(tracks.length - 1, Math.max(0, Number(bgmSettings.startTrack || 0)));
-      const track = tracks[startIndex];
-      if (track && isDirectAudio(track.url)) syncTrack(startIndex, true).catch(() => {});
+      const playable = tracks.map((t, i) => [t, i]).filter(([t]) => isDirectAudio(t.url));
+      if (!playable.length) return;
+      const [track, startIndex] = playable[Math.floor(Math.random() * playable.length)];
+      syncTrack(startIndex, true).catch(() => {});
     });
   }
 
@@ -528,65 +529,65 @@
     if (abilityPoolCount) abilityPoolCount.textContent = String(getAbilityPool().length);
   };
 
-  // Spark particle + suit flash effect for ability draw
-  const spawnSparks = (container, suit) => {
-    // Remove old sparks
-    const old = container.querySelector(".spark-container");
-    if (old) old.remove();
-    const oldFlash = container.querySelector(".ability-suit-flash");
-    if (oldFlash) oldFlash.remove();
-    container.classList.remove("dealing-glow");
+  // === Silent card spin reveal after the MP4 ===
+  const suitCharsMap = { spade: '♠', heart: '♥', diamond: '♦', club: '♣' };
 
-    const sparkBox = document.createElement("div");
-    sparkBox.className = "spark-container";
+  const playCardFlipReveal = (ability, onDone) => {
+    const isRed = ability.type === 'heart' || ability.type === 'diamond';
+    const suitChar = suitCharsMap[ability.type] || '♠';
+    const colorClass = isRed ? 'red' : 'gold';
 
-    const isRed = suit === "heart" || suit === "diamond";
-    const colors = isRed ? ["red", "red", "gold", "white"] : ["gold", "gold", "white", "red"];
-    const suitChars = { spade: "\u2660", heart: "\u2665", diamond: "\u2666", club: "\u2663" };
+    const oldOverlay = abilityResult.querySelector('.draw-overlay');
+    if (oldOverlay) oldOverlay.remove();
 
-    // Create 22 sparks
-    for (let i = 0; i < 22; i++) {
-      const spark = document.createElement("span");
-      const angle = (Math.PI * 2 * i) / 22 + (Math.random() - .5) * .6;
-      const dist = 60 + Math.random() * 120;
-      const x = Math.cos(angle) * dist;
-      const y = Math.sin(angle) * dist;
-      spark.className = `spark ${i % 3 === 0 ? "streak" : ""} ${colors[i % colors.length]}`;
-      spark.style.setProperty("--spark-x", `${x}px`);
-      spark.style.setProperty("--spark-y", `${y}px`);
-      spark.style.setProperty("--spark-dur", `${.45 + Math.random() * .4}s`);
-      spark.style.setProperty("--spark-delay", `${Math.random() * .15}s`);
-      if (i % 3 === 0) spark.style.transform = `rotate(${angle}rad)`;
-      sparkBox.appendChild(spark);
-    }
-    container.appendChild(sparkBox);
+    const overlay = document.createElement('div');
+    overlay.className = 'draw-overlay';
+    overlay.innerHTML = `
+      <div class="draw-card">
+        <div class="draw-card-inner">
+          <div class="draw-card-face draw-card-back"></div>
+          <div class="draw-card-face draw-card-front">
+            <span class="corner-suit tl ${colorClass}">${suitChar}</span>
+            <span class="draw-suit-symbol ${colorClass}">${suitChar}</span>
+            <span class="corner-suit br ${colorClass}">${suitChar}</span>
+          </div>
+        </div>
+      </div>
+    `;
+    abilityResult.appendChild(overlay);
+    abilityResult.classList.add('staging');
 
-    // Suit symbol flash
-    const flash = document.createElement("span");
-    flash.className = `ability-suit-flash ${isRed ? "red" : "gold"}`;
-    flash.textContent = suitChars[suit] || "\u2660";
-    container.appendChild(flash);
+    const inner = overlay.querySelector('.draw-card-inner');
 
-    // Glow
-    void container.offsetWidth;
-    container.classList.add("dealing-glow");
-
-    // Cleanup after animation
+    // Let the card settle into frame, then rotate continuously on one axis.
     setTimeout(() => {
-      sparkBox.remove();
-      flash.remove();
-      container.classList.remove("dealing-glow");
-    }, 900);
+      if (inner) inner.classList.add('spinning');
+    }, 620);
+
+    setTimeout(() => {
+      overlay.classList.add('fade-out');
+      fillAbilityContent(ability);
+      abilityResult.classList.remove('staging');
+      abilityResult.classList.remove('file-reveal');
+      void abilityResult.offsetWidth;
+      abilityResult.classList.add('file-reveal');
+      setTimeout(() => {
+        overlay.remove();
+        if (typeof onDone === 'function') onDone();
+      }, 420);
+    }, 2180);
   };
 
-  const renderAbility = ability => {
-    if (!ability || !abilityResult) return;
-    currentAbility = ability;
+  // === Cinematic MP4 ability draw sequence ===
+  const ABILITY_DRAW_VIDEO_URL = "https://i.cpvw.uk/6SC/ability-draw.mp4";
+  let drawInProgress = false;
+  let cinematicOverlay = null;
+  let cinematicVideo = null;
+  let cinematicTimeout = null;
+  let bgmVolumeBeforeCinematic = null;
+
+  const fillAbilityContent = ability => {
     abilityResult.dataset.suit = ability.type;
-    abilityResult.classList.remove("dealt");
-    void abilityResult.offsetWidth;
-    abilityResult.classList.add("dealt");
-    spawnSparks(abilityResult, ability.type);
     abilityCode.textContent = `${ability.code} · UNREGISTERED FILE`;
     abilitySuit.textContent = ability.suit;
     abilityCategory.textContent = abilitySuitNames[ability.type] || "SIGIL TYPE / 시질 계통";
@@ -595,11 +596,150 @@
     abilityEffect.textContent = ability.effect;
     abilityLimit.textContent = ability.limit;
     abilityBurst.textContent = ability.burst;
-    if (ability.pitch) { abilityPitch.textContent = "\u201c" + ability.pitch + "\u201d"; abilityPitch.hidden = false; } else { abilityPitch.textContent = ""; abilityPitch.hidden = true; }
+    if (ability.pitch) {
+      abilityPitch.textContent = `“${ability.pitch}”`;
+      abilityPitch.hidden = false;
+    } else {
+      abilityPitch.textContent = "";
+      abilityPitch.hidden = true;
+    }
     abilityCopyStatus.textContent = "";
   };
 
+  const ensureAbilityCinematic = () => {
+    if (cinematicOverlay && cinematicVideo) return;
+
+    cinematicOverlay = document.createElement("div");
+    cinematicOverlay.className = "ability-cinematic-overlay";
+    cinematicOverlay.hidden = true;
+    cinematicOverlay.setAttribute("aria-hidden", "true");
+    cinematicOverlay.innerHTML = `
+      <div class="ability-cinematic-frame">
+        <video
+          class="ability-cinematic-video"
+          preload="auto"
+          playsinline
+          webkit-playsinline
+          disablepictureinpicture
+          disableremoteplayback
+        ></video>
+        <span class="ability-cinematic-loader" aria-hidden="true">6</span>
+      </div>
+    `;
+    document.body.appendChild(cinematicOverlay);
+
+    cinematicVideo = cinematicOverlay.querySelector("video");
+    cinematicVideo.src = ABILITY_DRAW_VIDEO_URL;
+    cinematicVideo.controls = false;
+    cinematicVideo.loop = false;
+    cinematicVideo.muted = false;
+    cinematicVideo.volume = 1;
+    cinematicVideo.setAttribute("controlslist", "nodownload noplaybackrate noremoteplayback");
+    cinematicVideo.load();
+  };
+
+  const duckBgmForCinematic = () => {
+    if (!audio || audio.paused || bgmVolumeBeforeCinematic !== null) return;
+    bgmVolumeBeforeCinematic = audio.volume;
+    audio.volume = Math.min(audio.volume, 0.07);
+  };
+
+  const restoreBgmAfterCinematic = () => {
+    if (!audio || bgmVolumeBeforeCinematic === null) return;
+    audio.volume = bgmVolumeBeforeCinematic;
+    bgmVolumeBeforeCinematic = null;
+  };
+
+  const renderAbility = ability => {
+    if (!ability || !abilityResult || drawInProgress) return;
+    currentAbility = ability;
+    drawInProgress = true;
+
+    abilityResult.classList.remove("file-reveal");
+
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reducedMotion) {
+      fillAbilityContent(ability);
+      void abilityResult.offsetWidth;
+      abilityResult.classList.add("file-reveal");
+      drawInProgress = false;
+      return;
+    }
+
+    ensureAbilityCinematic();
+    if (!cinematicOverlay || !cinematicVideo) {
+      playCardFlipReveal(ability, () => {
+        drawInProgress = false;
+      });
+      return;
+    }
+
+    abilityResult.classList.add("staging");
+    document.body.classList.add("ability-cinematic-open");
+    cinematicOverlay.hidden = false;
+    cinematicOverlay.classList.remove("playing", "ending");
+    void cinematicOverlay.offsetWidth;
+    cinematicOverlay.classList.add("active");
+
+    cinematicVideo.pause();
+    try { cinematicVideo.currentTime = 0; } catch (error) {}
+    cinematicVideo.muted = false;
+    cinematicVideo.volume = 1;
+    duckBgmForCinematic();
+
+    let finished = false;
+    const finish = () => {
+      if (finished) return;
+      finished = true;
+      if (cinematicTimeout) clearTimeout(cinematicTimeout);
+      cinematicTimeout = null;
+
+      cinematicOverlay.classList.add("ending");
+
+      setTimeout(() => {
+        cinematicVideo.pause();
+        cinematicOverlay.classList.remove("active", "playing", "ending");
+        cinematicOverlay.hidden = true;
+        document.body.classList.remove("ability-cinematic-open");
+        restoreBgmAfterCinematic();
+
+        playCardFlipReveal(ability, () => {
+          drawInProgress = false;
+          abilityResult.scrollIntoView({ behavior: "smooth", block: "center" });
+        });
+      }, 260);
+    };
+
+    cinematicVideo.onplaying = () => cinematicOverlay.classList.add("playing");
+    cinematicVideo.ontimeupdate = () => {
+      if (Number.isFinite(cinematicVideo.duration) && cinematicVideo.duration - cinematicVideo.currentTime < 0.55) {
+        cinematicOverlay.classList.add("ending");
+      }
+    };
+    cinematicVideo.onended = finish;
+    cinematicVideo.onerror = finish;
+
+    cinematicTimeout = setTimeout(finish, 8000);
+
+    const playPromise = cinematicVideo.play();
+    if (playPromise && typeof playPromise.catch === "function") {
+      playPromise.catch(() => {
+        // Muted inline playback is the broadest mobile fallback.
+        cinematicVideo.muted = true;
+        cinematicVideo.play().catch(finish);
+      });
+    }
+  };
+
+  // Warm the remote MP4 cache after the page has settled.
+  if ("requestIdleCallback" in window) {
+    window.requestIdleCallback(ensureAbilityCinematic, { timeout: 1800 });
+  } else {
+    setTimeout(ensureAbilityCinematic, 500);
+  }
+
   const drawAbility = () => {
+    if (drawInProgress) return;
     const pool = getAbilityPool();
     if (!pool.length) return;
     let next = pool[Math.floor(Math.random() * pool.length)];
@@ -607,6 +747,10 @@
       while (next.code === currentAbility.code) next = pool[Math.floor(Math.random() * pool.length)];
     }
     renderAbility(next);
+    // Auto-scroll to see the card animation
+    requestAnimationFrame(() => {
+      abilityResult.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
   };
 
   const abilityCopyText = ability => [
@@ -662,7 +806,13 @@
     redrawAbilityButton.addEventListener("click", drawAbility);
     copyAbilityButton.addEventListener("click", copyAbility);
     updateAbilityPoolCount();
-    drawAbility();
+    // Initial load: show without animation
+    const initPool = getAbilityPool();
+    if (initPool.length) {
+      const initAbility = initPool[Math.floor(Math.random() * initPool.length)];
+      currentAbility = initAbility;
+      fillAbilityContent(initAbility);
+    }
   }
 
   // Gallery: featured mosaic -> character archive below
