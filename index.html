@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#08070a" />
+  <meta name="description" content="Six Spirits RP 세계관 가이드. 세계관, 세력, 캐릭터, BGM, 페르소나 능력 생성기와 갤러리를 한눈에 볼 수 있는 소개 사이트." />
+  <title>SIX SPIRITS — Cashout Night / 식스 스피릿츠</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="ambient ambient-a" aria-hidden="true"></div>
+  <div class="ambient ambient-b" aria-hidden="true"></div>
+
+  <header class="site-header" id="top">
+    <a class="brand" href="#top" aria-label="Six Spirits 홈">
+      <span class="brand-mark">6</span>
+      <span class="brand-copy"><strong>SIX SPIRITS</strong><small id="brandSubtitle">식스 스피릿츠 프루프</small></span>
+    </a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">MENU</button>
+    <nav class="site-nav" id="site-nav" aria-label="주요 메뉴">
+      <a href="#world">WORLD / 세계관</a>
+      <a href="#factions">FACTIONS / 세력</a>
+      <a href="#characters">CHARACTERS / 캐릭터</a>
+      <a href="#soundtrack">BGM / 음악</a>
+      <a href="#ability-generator">ABILITY DRAW / 능력 뽑기</a>
+      <a href="#gallery">GALLERY / 갤러리</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero section-shell" aria-labelledby="hero-title">
+      <div class="hero-copy reveal">
+        <p class="eyebrow" id="heroEyebrow">CASHOUT NIGHT · 캐시아웃 나이트 · 매년 1월 27일 · 00:00—06:00</p>
+        <h1 id="hero-title">THE HOUSE<br><em>ALWAYS</em> WINS.</h1>
+        <p class="hero-lead" id="heroLead">하우스는 언제나 승리한다지만... 오늘 밤 프루프가 버텨낸다면?</p>
+        <p class="hero-summary" id="heroSummary">이능력자(딜러) 사회, 칩으로 가격이 매겨지는 생존, 그리고 하우스가 설계한 여섯 시간짜리 합법 사냥. 라스베가스 프리몬트 거리의 여섯 딜러는 매년 같은 질문 앞에 선다. 누구의 규칙 아래 살아남을 것인가.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#quick-brief" id="enterFloor">ENTER THE FLOOR / 입장하기</a>
+        </div>
+      </div>
+
+      <div class="hero-panel reveal" aria-label="캐시아웃 나이트 카운트다운">
+        <div class="hero-panel-top">
+          <span class="status-dot"></span>
+          <span>NEXT CASHOUT WINDOW / 다음 캐시아웃까지</span>
+        </div>
+        <div class="countdown" id="countdown">
+          <div><strong id="countDays">000</strong><span>DAYS / 일</span></div>
+          <div><strong id="countHours">00</strong><span>HRS / 시</span></div>
+          <div><strong id="countMinutes">00</strong><span>MIN / 분</span></div>
+          <div><strong id="countSeconds">00</strong><span>SEC / 초</span></div>
+        </div>
+        <div class="rank-strip" aria-label="딜러 랭킹">
+          <span>BRONZE / 브론즈</span><span>SILVER / 실버</span><span>GOLD / 골드</span><span>PLATINUM / 플래티넘</span><span>DIAMOND / 다이아몬드</span>
+        </div>
+      </div>
+
+      <div class="scroll-cue" aria-hidden="true"><span></span>SCROLL</div>
+    </section>
+
+    <section class="ticker" aria-label="세계관 핵심 문구">
+      <div class="ticker-track">
+        <span>CHIPS ARE CURRENCY / 칩은 화폐다</span><b>♠</b><span>THE SIGIL BURNS FIRST / 먼저 타오르는 건 시질이다</span><b>♥</b><span>EVERY WIN PAYS THE RAKE / 모든 승리는 레이크를 남긴다</span><b>♦</b><span>FOLD BEFORE THE POWER USES YOU / 힘이 널 쓰기 전에 먼저 폴드해라</span><b>♣</b>
+        <span>CHIPS ARE CURRENCY / 칩은 화폐다</span><b>♠</b><span>THE SIGIL BURNS FIRST / 먼저 타오르는 건 시질이다</span><b>♥</b><span>EVERY WIN PAYS THE RAKE / 모든 승리는 레이크를 남긴다</span><b>♦</b><span>FOLD BEFORE THE POWER USES YOU / 힘이 널 쓰기 전에 먼저 폴드해라</span><b>♣</b>
+      </div>
+    </section>
+
+    <section class="section-shell section-block" id="world" aria-labelledby="world-title">
+      <div class="quick-brief-board reveal" id="quick-brief">
+        <div class="quick-brief-heading">
+          <p class="eyebrow">QUICK BRIEF / 빠른 요약</p>
+          <h2 id="quickBriefTitle">처음 보는 사람을 위한<br>핵심 다섯 가지.</h2>
+        </div>
+        <ol>
+          <li><strong>딜러</strong><span>하우스에 등록된 이능력자.</span></li>
+          <li><strong>마크</strong><span>비능력자와 미등록자를 낮춰 부르는 말.</span></li>
+          <li><strong>칩</strong><span>화폐이자 등록권이며, 보호와 통제의 수단.</span></li>
+          <li><strong>버스트</strong><span>능력 과부하가 몸과 판단을 침식하는 상태.</span></li>
+          <li><strong>캐시아웃</strong><span>매년 여섯 시간 동안 열리는 강제 생존전.</span></li>
+        </ol>
+      </div>
+
+      <div class="section-heading reveal world-heading">
+        <p class="eyebrow">01 · WORLD / 세계관</p>
+        <h2 id="world-title">A CITY BUILT<br>ON CONTROL.</h2>
+        <p id="worldIntro">1951년 네바다에서 자행된 핵실험 이후, 특별한 〈능력〉을 지닌 사람들이 나타났다. 오른손등에 빛나는 시질이 이들의 능력을 나타냈다. 정부의 이능력자 은폐와 카지노 자본의 결탁은 결국 하우스라는 거대한 이능력자(딜러) 생태계를 만들었다.</p>
+      </div>
+
+      <div class="world-grid">
+        <article class="lore-card lore-card-wide reveal">
+          <span class="card-index">ORIGIN / 1951 · 기원</span>
+          <h3>시질의 기원</h3>
+          <p id="originText">네바다 핵실험 이후 일부 생존자에게 카드 문양의 이능력이 발현됐다. 1960년대 정부는 카지노 자본과 손잡고 보유자를 등록·추적하기 시작했고, 그 비공식 관리망이 오늘의 하우스로 성장했다.</p>
+        </article>
+        <article class="lore-card reveal">
+          <span class="suit suit-spade">♠</span>
+          <h3>신체계 / Spade</h3>
+          <p>육체, 감각, 궤도와 운동에 직접 개입한다.</p>
+        </article>
+        <article class="lore-card reveal">
+          <span class="suit suit-heart">♥</span>
+          <h3>정신계 / Heart</h3>
+          <p>감정, 인지, 생체 신호와 의지에 영향을 준다.</p>
+        </article>
+        <article class="lore-card reveal">
+          <span class="suit suit-diamond">♦</span>
+          <h3>에너지계 / Diamond</h3>
+          <p>열, 폭발, 전환과 방출을 다룬다.</p>
+        </article>
+        <article class="lore-card reveal">
+          <span class="suit suit-club">♣</span>
+          <h3>물질·법칙계 / Club</h3>
+          <p>외부 대상과 규칙, 확률과 계약을 간섭한다.</p>
+        </article>
+      </div>
+
+      <div class="system-board reveal">
+        <div class="system-title">
+          <p class="eyebrow">BURST PROTOCOL / 버스트 프로토콜</p>
+          <h3>힘을 쓸수록,<br>결국 힘이 당신을 쓴다.</h3>
+        </div>
+        <ol class="burst-track">
+          <li><span>01</span><strong>시질 발열</strong><small>손등의 문양이 뜨거워진다.</small></li>
+          <li><span>02</span><strong>손떨림</strong><small>정밀도와 판단이 흔들린다.</small></li>
+          <li><span>03</span><strong>코피</strong><small>신체가 대가를 청구한다.</small></li>
+          <li><span>04</span><strong>감각왜곡</strong><small>현실과 능력의 경계가 무너진다.</small></li>
+          <li><span>05</span><strong>폭주</strong><small>능력이 주인을 집어삼킨다.</small></li>
+        </ol>
+      </div>
+
+      <div class="cashout-board reveal">
+        <div class="cashout-time"><span>00:00</span><i></i><span>06:00</span></div>
+        <div>
+          <p class="eyebrow">CASHOUT NIGHT / 캐시아웃 나이트</p>
+          <h3>합법적 폭력. 강제 참여. 공개 관전.</h3>
+          <p id="cashoutText">매년 1월 27일, 베가스 전역에서 딜러는 사냥꾼이자 표적이 된다. 회수한 칩은 랭킹이 되고, 일부는 반드시 하우스에 레이크로 상납된다.</p>
+        </div>
+      </div>
+
+      <div class="locations-board reveal">
+        <div class="locations-intro">
+          <p class="eyebrow">KEY LOCATIONS / 주요 무대</p>
+          <h3>SEVEN STAGES<br>OF THE NIGHT.<small id="locationsSubtitle">밤을 가르는 일곱 개의 무대</small></h3>
+        </div>
+        <div class="location-list">
+          <article><span>01</span><div><strong>프루프 바</strong><small>중립지대 · 정보 교환</small></div></article>
+          <article><span>02</span><div><strong>프루프 지하</strong><small>작전실 · 무기고 · 숙소</small></div></article>
+          <article><span>03</span><div><strong>프루프 외부</strong><small>후문 · 골목 · 옥상 방어선</small></div></article>
+          <article><span>04</span><div><strong>프리몬트 스트리트</strong><small>네온 · 관광객 · 감시망</small></div></article>
+          <article><span>05</span><div><strong>하우스 플로어</strong><small>칩 정산 · 랭킹 · 억제제 거래</small></div></article>
+          <article><span>06</span><div><strong>블랙 클리닉</strong><small>비공식 버스트 치료소</small></div></article>
+          <article><span>07</span><div><strong>칩 마켓</strong><small>빈 칩 · 위조 등록권 · 유품</small></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-block faction-section" id="factions" aria-labelledby="factions-title">
+      <div class="section-shell">
+        <div class="section-heading horizontal reveal">
+          <div><p class="eyebrow">02 · FACTIONS / 세력</p><h2 id="factions-title">EVERY SIDE<br>HAS A PRICE.</h2></div>
+          <p id="factionsIntro">질서, 자유, 생존, 신앙. 이름은 달라도 각 세력은 저마다의 방식으로 사람을 붙잡고 소유하려 한다.</p>
+        </div>
+        <div class="filter-row reveal" id="factionFilters" aria-label="세력 필터"></div>
+        <div class="faction-grid" id="factionGrid"></div>
+      </div>
+    </section>
+
+    <section class="section-shell section-block" id="characters" aria-labelledby="characters-title">
+      <div class="section-heading horizontal reveal">
+        <div><p class="eyebrow">03 · CHARACTERS / 캐릭터</p><h2 id="characters-title">THE PLAYERS<br>AT THE TABLE.</h2></div>
+        <p id="charactersIntro">카드를 뒤집기 전까지 누구도 진짜 패를 보여주지 않는다. 캐릭터 카드를 누르면 세부 프로필을 확인할 수 있다.</p>
+      </div>
+      <div class="character-tabs reveal" id="characterTabs" role="tablist" aria-label="캐릭터 그룹"></div>
+      <div class="character-grid" id="characterGrid"></div>
+
+      <div class="relationship-board reveal">
+        <div class="relationship-head">
+          <p class="eyebrow">TEAM DYNAMICS / 관계</p>
+          <h3>여섯 명은 한 팀이지만,<br>모두 같은 방식으로 믿지는 않는다.</h3>
+        </div>
+        <div class="relationship-columns">
+          <article>
+            <span>BOURBON TRIO / 버번 트리오</span>
+            <h4>케일라 · 재키 · 엘리아</h4>
+            <p>유대, 무력, 수성. 케일라와 엘리아는 자매 같은 신뢰를, 케일라와 재키는 등을 맡길 믿음을, 엘리아와 재키는 오래된 친구의 습관을 공유한다.</p>
+          </article>
+          <article>
+            <span>VODKA TRIO / 보드카 트리오</span>
+            <h4>아드리엔 · 미케일라 · 마리아</h4>
+            <p>개인주의, 정보, 공세. 차가운 존중과 피곤한 동료애, 말로 설명하지 않는 동질감이 세 사람을 묶는다.</p>
+          </article>
+          <article class="relationship-wide">
+            <span>CROSS-TABLE / 교차 관계</span>
+            <h4>일상에서는 미스매치, 전투에서는 단일팀.</h4>
+            <p>케일라와 아드리엔의 알파 충돌, 재키와 마리아의 카오스, 엘리아와 아드리엔의 서로 다른 통제, 미케일라가 이어 붙이는 정밀함. 사적인 긴장은 말이 아니라 행동에만 샌다.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="soundtrack-section section-block" id="soundtrack" aria-labelledby="soundtrack-title">
+      <div class="section-shell soundtrack-layout">
+        <div class="section-heading reveal">
+          <p class="eyebrow">04 · BGM ARCHIVE / 음악 아카이브</p>
+          <h2 id="soundtrack-title">SOUNDTRACK<br>FOR THE HUNT.</h2>
+          <p id="soundtrackIntro">BGM 파일 주소는 수정용 파일에 넣으면 된다. 직접 연결되는 MP3 주소를 사용하면 사이트 안에서 끊김 없이 재생된다.</p>
+        </div>
+        <div class="player reveal">
+          <div class="player-art" id="playerArt">
+            <span id="playerNumber">01</span>
+            <div class="vinyl"></div>
+          </div>
+          <div class="player-info">
+            <p class="eyebrow" id="playerScene">오프닝 / 프루프 바</p>
+            <h3 id="playerTitle">Neon After Midnight</h3>
+            <p id="playerArtist">링크 대기 / PLACEHOLDER</p>
+            <div class="progress"><span id="progressBar"></span></div>
+            <div class="player-controls">
+              <button type="button" id="prevTrack" aria-label="이전 곡">PREV / 이전</button>
+              <button type="button" class="play-button" id="playTrack" aria-label="재생">PLAY / 재생</button>
+              <button type="button" id="nextTrack" aria-label="다음 곡">NEXT / 다음</button>
+            </div>
+            <audio id="audioPlayer" preload="metadata"></audio>
+          </div>
+        </div>
+        <div class="playlist reveal" id="playlist"></div>
+      </div>
+    </section>
+
+    <section class="ability-section section-block" id="ability-generator" aria-labelledby="ability-title">
+      <div class="section-shell">
+        <div class="section-heading horizontal reveal">
+          <div><p class="eyebrow">05 · ABILITY DRAW / 능력 뽑기</p><h2 id="ability-title">DRAW YOUR<br>SIGIL.</h2></div>
+          <p id="abilityIntro">문양을 고르거나 전체 덱에서 뽑아 페르소나의 능력을 완성하세요. 효과뿐 아니라 제약과 버스트 위험까지 함께 생성됩니다.</p>
+        </div>
+
+        <div class="ability-lab reveal">
+          <aside class="ability-controls" aria-label="능력 생성 조건">
+            <p class="eyebrow">SELECT A SUIT / 문양 선택</p>
+            <div class="ability-suit-filters" id="abilitySuitFilters" role="group" aria-label="시질 문양">
+              <button type="button" class="active" data-suit="all">ALL / 전체</button>
+              <button type="button" data-suit="spade"><b>♠</b> 신체</button>
+              <button type="button" data-suit="heart"><b>♥</b> 정신</button>
+              <button type="button" data-suit="diamond"><b>♦</b> 에너지</button>
+              <button type="button" data-suit="club"><b>♣</b> 물질·법칙</button>
+            </div>
+            <button type="button" class="ability-draw-button" id="drawAbility">DRAW A CARD / 능력 뽑기</button>
+            <p class="ability-pool-note"><span id="abilityPoolCount">48</span>개의 등록 전 능력 프리셋에서 무작위로 추첨합니다.</p>
+          </aside>
+
+          <article class="ability-result" id="abilityResult" aria-live="polite">
+            <div class="ability-card-top">
+              <span class="ability-file" id="abilityCode">UNREGISTERED FILE</span>
+              <span class="ability-suit-badge" id="abilitySuit">?</span>
+            </div>
+            <div class="ability-name">
+              <p id="abilityCategory">SIGIL TYPE / 시질 계통</p>
+              <h3 id="abilityName">카드를 뽑아 능력을 확인하세요.</h3>
+              <span id="abilityNameEn">DRAW YOUR FIRST CARD</span>
+            </div>
+            <dl class="ability-details">
+              <div><dt>EFFECT / 효과</dt><dd id="abilityEffect">능력의 핵심 효과가 표시됩니다.</dd></div>
+              <div><dt>LIMIT / 제약</dt><dd id="abilityLimit">강력한 효과에는 반드시 사용 조건이 붙습니다.</dd></div>
+              <div><dt>BURST RISK / 버스트 위험</dt><dd id="abilityBurst">과사용 시 나타나는 대가가 표시됩니다.</dd></div>
+            </dl>
+            <blockquote id="abilityPitch">“힘을 고르는 게 아니다. 어떤 대가를 감당할지 고르는 것이다.”</blockquote>
+            <div class="ability-actions">
+              <button type="button" class="btn btn-primary" id="redrawAbility">REDRAW / 다시 뽑기</button>
+              <button type="button" class="btn btn-ghost" id="copyAbility">COPY SETTING / 설정 복사</button>
+            </div>
+            <p class="ability-copy-status" id="abilityCopyStatus" aria-live="polite"></p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-shell section-block" id="gallery" aria-labelledby="gallery-title">
+      <div class="section-heading horizontal reveal">
+        <div><p class="eyebrow">06 · GALLERY / 갤러리</p><h2 id="gallery-title">EVIDENCE<br>FROM THE NIGHT.</h2></div>
+        <p id="galleryIntro">대표 이미지를 선택하면 해당 캐릭터의 일반 이미지 아카이브가 바로 아래에 펼쳐진다. 아카이브에는 00~21과 50 코드만 표시된다.</p>
+      </div>
+      <div class="gallery-grid" id="galleryGrid"></div>
+
+      <div class="gallery-detail" id="galleryDetail" hidden>
+        <div class="gallery-detail-head">
+          <div>
+            <p class="eyebrow">CHARACTER ARCHIVE / 캐릭터 아카이브</p>
+            <h3 id="galleryDetailTitle"></h3>
+            <p id="galleryDetailDesc"></p>
+          </div>
+          <button type="button" class="gallery-detail-close" id="closeGalleryDetail">CLOSE / 닫기</button>
+        </div>
+        <div class="gallery-detail-grid" id="galleryDetailGrid"></div>
+      </div>
+    </section>
+
+    <section class="closing section-block">
+      <div class="section-shell closing-inner reveal">
+        <p class="eyebrow" id="closingEyebrow">WELCOME TO PROOF / 프루프에 오신 것을 환영합니다</p>
+        <h2>KEEP YOUR GLOVES ON.<br>KEEP YOUR CHIPS CLOSE.</h2>
+        <a class="btn btn-primary" href="#top">BACK TO TOP / 맨 위로</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span id="footerLeft">SIX SPIRITS · RP WORLD GUIDE / 역할극 세계관 안내</span>
+    <span id="footerRight">FREMONT, LAS VEGAS</span>
+  </footer>
+
+  <dialog class="modal" id="characterModal">
+    <button class="modal-close" type="button" data-close-modal aria-label="닫기">×</button>
+    <div class="modal-character" id="modalCharacter"></div>
+  </dialog>
+
+
+  <dialog class="lightbox" id="lightbox">
+    <button class="modal-close" type="button" data-close-modal aria-label="닫기">×</button>
+    <figure>
+      <img id="lightboxImage" alt="" />
+      <figcaption id="lightboxCaption"></figcaption>
+    </figure>
+  </dialog>
+
+  <script src="edit-content.js"></script>
+  <script src="data.js"></script>
+  <script src="abilities.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
