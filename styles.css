@@ -1759,3 +1759,69 @@ body.ability-cinematic-open {
     font-size: clamp(31px, 10vw, 36px);
   }
 }
+
+
+/* ============================================================
+   DESKTOP SOUNDTRACK LAYOUT FIX
+   Prevent the large archive heading from overlapping the player
+   around tablet / compact-desktop widths.
+   ============================================================ */
+@media (min-width: 1121px) {
+  .soundtrack-layout {
+    grid-template-columns: minmax(420px, .88fr) minmax(0, 1.12fr);
+    column-gap: 48px;
+  }
+
+  .soundtrack-layout .section-heading {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .soundtrack-layout .section-heading h2 {
+    font-size: clamp(54px, 5.45vw, 78px);
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+
+  .player,
+  .playlist {
+    min-width: 0;
+  }
+}
+
+@media (min-width: 681px) and (max-width: 1120px) {
+  .soundtrack-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 34px;
+  }
+
+  .soundtrack-layout .section-heading {
+    position: static;
+    top: auto;
+    max-width: 760px;
+    margin-bottom: 0;
+  }
+
+  .soundtrack-layout .section-heading h2 {
+    font-size: clamp(52px, 7.2vw, 74px);
+  }
+
+  .soundtrack-layout .player,
+  .soundtrack-layout .playlist {
+    grid-column: 1;
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+
+/* BGM deep-link: keep the exact requested track visually anchored. */
+.track.deep-linked {
+  background: linear-gradient(90deg, rgba(186,36,53,.13), rgba(210,174,99,.055));
+  box-shadow: inset 3px 0 0 var(--red-bright);
+  scroll-margin-block: 28vh;
+}
+.track.deep-linked .track-number,
+.track.deep-linked strong {
+  color: var(--gold);
+}

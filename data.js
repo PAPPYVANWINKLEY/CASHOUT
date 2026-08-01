@@ -328,7 +328,8 @@ window.SIX_SPIRITS_DATA = {
     { code: "19", label: "키스", en: "Kiss" },
     { code: "20", label: "결혼", en: "Wedding" },
     { code: "21", label: "유혹", en: "Temptation" },
-    { code: "50", label: "취함", en: "Drunk" }
+    { code: "49", label: "키스조르기", en: "Begging for Kiss" },
+    { code: "50", label: "음주", en: "Drunk" }
   ],
   gallery: [
     { code: "A", scene: "16", title: "Hold the Line", subtitle: "KAYLA / COMBAT" },

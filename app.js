@@ -342,25 +342,60 @@
 
   const isDirectAudio = url => /\.(mp3|ogg|wav|m4a|aac)(\?.*)?$/i.test(url || "");
   let deepLinkPlayButton = null;
+  let deepLinkUnlockCleanup = null;
+
+  const clearDeepLinkUnlock = () => {
+    if (typeof deepLinkUnlockCleanup === "function") deepLinkUnlockCleanup();
+    deepLinkUnlockCleanup = null;
+  };
 
   const removeDeepLinkPlayButton = () => {
     if (deepLinkPlayButton) deepLinkPlayButton.remove();
     deepLinkPlayButton = null;
+    clearDeepLinkUnlock();
   };
 
-  const showDeepLinkPlayButton = (index) => {
+  const focusTrackRow = (index, behavior = "smooth") => {
+    const row = $(`.track[data-track="${index}"]`, playlist);
+    if (!row) return;
+    $$(".track.deep-linked", playlist).forEach(item => item.classList.remove("deep-linked"));
+    row.classList.add("deep-linked");
+    row.scrollIntoView({ behavior, block: "center", inline: "nearest" });
+  };
+
+  const armDeepLinkUnlock = index => {
+    clearDeepLinkUnlock();
+    const tryPlay = () => {
+      clearDeepLinkUnlock();
+      syncTrack(index, true)
+        .then(removeDeepLinkPlayButton)
+        .catch(() => showDeepLinkPlayButton(index));
+    };
+    const options = { capture: true, passive: true };
+    document.addEventListener("pointerdown", tryPlay, options);
+    document.addEventListener("keydown", tryPlay, { capture: true });
+    deepLinkUnlockCleanup = () => {
+      document.removeEventListener("pointerdown", tryPlay, options);
+      document.removeEventListener("keydown", tryPlay, { capture: true });
+    };
+  };
+
+  const showDeepLinkPlayButton = index => {
     const track = tracks[index];
     if (!track || !isDirectAudio(track.url)) return;
-    removeDeepLinkPlayButton();
+    if (deepLinkPlayButton) deepLinkPlayButton.remove();
     deepLinkPlayButton = document.createElement("button");
     deepLinkPlayButton.type = "button";
     deepLinkPlayButton.className = "deep-link-play";
-    deepLinkPlayButton.innerHTML = `<span>▶ BGM 재생</span><strong>${track.code || "OST"} · ${track.title}</strong>`;
+    deepLinkPlayButton.innerHTML = `<span>▶ 선택한 BGM 재생</span><strong>${track.code || "OST"} · ${track.title}</strong>`;
     deepLinkPlayButton.setAttribute("aria-label", `${track.title} 재생`);
-    deepLinkPlayButton.addEventListener("click", () => {
+    deepLinkPlayButton.addEventListener("click", event => {
+      event.stopPropagation();
+      focusTrackRow(index, "smooth");
       syncTrack(index, true).then(removeDeepLinkPlayButton).catch(() => {});
     });
     document.body.appendChild(deepLinkPlayButton);
+    armDeepLinkUnlock(index);
   };
 
   const syncTrack = (index, autoplay = false) => {
@@ -392,6 +427,7 @@
     row.className = "track";
     row.tabIndex = 0;
     row.dataset.track = String(index);
+    row.id = `bgm-${String(track.code || index + 1).toUpperCase()}`;
     row.innerHTML = `
       <span class="track-number">${track.code || String(index + 1).padStart(2, "0")}</span>
       <div class="track-copy">
@@ -484,14 +520,23 @@
   if (requestedBgm) {
     const requestedIndex = tracks.findIndex(track => String(track.code || "").toUpperCase() === requestedBgm);
     if (requestedIndex >= 0) {
-      syncTrack(requestedIndex);
-      window.setTimeout(() => {
-        const soundtrackSection = document.getElementById("soundtrack");
-        if (soundtrackSection) soundtrackSection.scrollIntoView({ block: "start" });
-        syncTrack(requestedIndex, true)
-          .then(removeDeepLinkPlayButton)
-          .catch(() => showDeepLinkPlayButton(requestedIndex));
-      }, 180);
+      // Prevent the browser from restoring an older scroll position over the requested track.
+      if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+
+      // Select and attempt playback immediately. Delaying play() makes transient activation less useful.
+      syncTrack(requestedIndex, true)
+        .then(removeDeepLinkPlayButton)
+        .catch(() => showDeepLinkPlayButton(requestedIndex));
+
+      // Layout, fonts and in-app browsers can settle at different times, so focus the exact row more than once.
+      const focusRequestedTrack = behavior => {
+        requestAnimationFrame(() => requestAnimationFrame(() => focusTrackRow(requestedIndex, behavior)));
+      };
+      focusRequestedTrack("auto");
+      window.setTimeout(() => focusRequestedTrack("auto"), 260);
+      window.addEventListener("load", () => {
+        window.setTimeout(() => focusRequestedTrack("smooth"), 80);
+      }, { once: true });
     }
   }
 
