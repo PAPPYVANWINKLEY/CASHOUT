@@ -5,6 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#08070a" />
   <meta name="description" content="Six Spirits RP 세계관 가이드. 세계관, 세력, 캐릭터, BGM, 페르소나 능력 생성기와 갤러리를 한눈에 볼 수 있는 소개 사이트." />
+
+  <!-- Open Graph / 링크 공유용 -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="SIX SPIRITS" />
+  <meta property="og:title" content="SIX SPIRITS — CASHOUT NIGHT / 식스 스피릿츠" />
+  <meta property="og:description" content="하우스는 언제나 승리한다. 적어도 오늘 밤, 프루프가 살아남기 전까지는. 칩이 곧 목숨값인 이능력자 사회의 여섯 시간짜리 합법 사냥." />
+  <meta property="og:image" content="https://i.cpvw.uk/6SC/og-cover.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale" content="ko_KR" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="SIX SPIRITS — CASHOUT NIGHT / 식스 스피릿츠" />
+  <meta name="twitter:description" content="하우스는 언제나 승리한다. 적어도 오늘 밤, 프루프가 살아남기 전까지는." />
+  <meta name="twitter:image" content="https://i.cpvw.uk/6SC/og-cover.png" />
   <title>SIX SPIRITS — Cashout Night / 식스 스피릿츠</title>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="styles.css" />
@@ -282,6 +297,11 @@
   <dialog class="modal" id="characterModal">
     <button class="modal-close" type="button" data-close-modal aria-label="닫기">×</button>
     <div class="modal-character" id="modalCharacter"></div>
+    <div class="modal-nav">
+      <button type="button" class="modal-nav-btn" id="modalPrev">‹ PREV / 이전</button>
+      <span class="modal-nav-count" id="modalNavCount"></span>
+      <button type="button" class="modal-nav-btn" id="modalNext">NEXT / 다음 ›</button>
+    </div>
   </dialog>
 
 
@@ -296,6 +316,32 @@
   <button class="fab-top" id="fabTop" type="button" aria-label="맨 위로 이동" hidden>
     <span>▲</span>TOP
   </button>
+
+  <!-- 하단 미니 BGM 네비게이터 -->
+  <div class="mini-player" id="miniPlayer" hidden>
+    <button type="button" class="mini-btn" id="miniPrev" aria-label="이전 곡">◀◀</button>
+    <button type="button" class="mini-btn mini-play" id="miniPlay" aria-label="재생/일시정지">▶</button>
+    <button type="button" class="mini-btn" id="miniNext" aria-label="다음 곡">▶▶</button>
+    <div class="mini-info">
+      <span class="mini-code" id="miniCode">M01</span>
+      <span class="mini-title" id="miniTitle">—</span>
+    </div>
+    <div class="mini-progress" id="miniProgress"><span id="miniProgressBar"></span></div>
+    <button type="button" class="mini-btn mini-mute" id="miniMute" aria-label="음소거">🔊</button>
+    <button type="button" class="mini-btn mini-close" id="miniClose" aria-label="플레이어 숨기기">✕</button>
+  </div>
+
+  <!-- 갤러리 이미지 라이트박스 -->
+  <div class="img-lightbox" id="imgLightbox" hidden>
+    <button type="button" class="img-lightbox-close" id="imgLightboxClose" aria-label="닫기">✕</button>
+    <button type="button" class="img-lightbox-nav prev" id="imgLightboxPrev" aria-label="이전 이미지">‹</button>
+    <img id="imgLightboxImg" alt="" />
+    <button type="button" class="img-lightbox-nav next" id="imgLightboxNext" aria-label="다음 이미지">›</button>
+    <p class="img-lightbox-caption" id="imgLightboxCaption"></p>
+  </div>
+
+  <!-- 용어 툴팁 -->
+  <div class="glossary-tip" id="glossaryTip" hidden></div>
 
   <script src="edit-content.js"></script>
   <script src="data.js"></script>

@@ -269,9 +269,19 @@
       });
   };
 
+  // Track which characters are currently shown, for modal prev/next
+  let modalCharList = [];
+  let modalCharIndex = 0;
+
   const openCharacter = id => {
     const character = data.characters.find(item => item.id === id);
     if (!character) return;
+
+    // Build nav list from currently rendered cards
+    modalCharList = $$(".character-card", characterGrid).map(c => c.dataset.character);
+    modalCharIndex = modalCharList.indexOf(id);
+    if (modalCharIndex < 0) { modalCharList = [id]; modalCharIndex = 0; }
+
     modalCharacter.innerHTML = `
       <div class="modal-portrait">${portraitMarkup(character)}</div>
       <div class="modal-copy">
@@ -289,9 +299,39 @@
       </div>
     `;
     applyImageFallback(modalCharacter);
-    characterModal.showModal();
+
+    // Update nav state
+    const navCount = $("#modalNavCount");
+    const navPrev = $("#modalPrev");
+    const navNext = $("#modalNext");
+    if (navCount) navCount.textContent = `${modalCharIndex + 1} / ${modalCharList.length}`;
+    const single = modalCharList.length < 2;
+    if (navPrev) navPrev.style.visibility = single ? "hidden" : "visible";
+    if (navNext) navNext.style.visibility = single ? "hidden" : "visible";
+
+    if (!characterModal.open) characterModal.showModal();
+    modalCharacter.scrollTop = 0;
+    characterModal.scrollTop = 0;
     document.body.classList.add("modal-open");
   };
+
+  const stepCharacter = dir => {
+    if (modalCharList.length < 2) return;
+    modalCharIndex = (modalCharIndex + dir + modalCharList.length) % modalCharList.length;
+    openCharacter(modalCharList[modalCharIndex]);
+  };
+
+  const modalPrevBtn = $("#modalPrev");
+  const modalNextBtn = $("#modalNext");
+  if (modalPrevBtn) modalPrevBtn.addEventListener("click", e => { e.stopPropagation(); stepCharacter(-1); });
+  if (modalNextBtn) modalNextBtn.addEventListener("click", e => { e.stopPropagation(); stepCharacter(1); });
+
+  // Arrow keys inside character modal
+  document.addEventListener("keydown", event => {
+    if (!characterModal.open) return;
+    if (event.key === "ArrowLeft") { event.preventDefault(); stepCharacter(-1); }
+    if (event.key === "ArrowRight") { event.preventDefault(); stepCharacter(1); }
+  });
 
   characterGrid.addEventListener("click", event => {
     const card = event.target.closest(".character-card");
@@ -910,7 +950,7 @@
 
     galleryDetail.hidden = false;
     galleryDetailTitle.textContent = `${character.ko} / ${character.name}`;
-    galleryDetailDesc.textContent = `${character.role} · ${character.callSign} · 일반 이미지 00~21 및 50`;
+    galleryDetailDesc.textContent = `${character.role} · ${character.callSign} · 일반 이미지 00~21 및 49, 50`;
     galleryDetailGrid.innerHTML = "";
 
     generalScenes.forEach((scene, index) => {
@@ -981,4 +1021,295 @@
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
   }
+  // ==========================================================
+  // MINI BGM PLAYER (bottom navigator)
+  // ==========================================================
+  const miniPlayer = $("#miniPlayer");
+  if (miniPlayer && audio) {
+    const miniPlay = $("#miniPlay");
+    const miniPrev = $("#miniPrev");
+    const miniNext = $("#miniNext");
+    const miniMute = $("#miniMute");
+    const miniClose = $("#miniClose");
+    const miniCode = $("#miniCode");
+    const miniTitle = $("#miniTitle");
+    const miniProgress = $("#miniProgress");
+    const miniProgressBar = $("#miniProgressBar");
+
+    let miniDismissed = false;
+
+    // Restore mute preference
+    try {
+      if (localStorage.getItem("sixSpiritsMuted") === "1") {
+        audio.muted = true;
+        miniMute.classList.add("muted");
+        miniMute.textContent = "\u{1F507}";
+      }
+    } catch (e) {}
+
+    const syncMini = () => {
+      const track = tracks[currentTrack];
+      if (!track) return;
+      miniCode.textContent = track.code || String(currentTrack + 1).padStart(2, "0");
+      miniTitle.textContent = track.title || "\u2014";
+      miniPlay.classList.toggle("playing", !audio.paused);
+      // Show player once audio has been engaged
+      if (!miniDismissed && (!audio.paused || audio.currentTime > 0)) {
+        miniPlayer.hidden = false;
+        requestAnimationFrame(() => miniPlayer.classList.add("visible"));
+      }
+    };
+
+    audio.addEventListener("play", syncMini);
+    audio.addEventListener("pause", syncMini);
+    audio.addEventListener("loadedmetadata", syncMini);
+    audio.addEventListener("timeupdate", () => {
+      if (!audio.duration) return;
+      miniProgressBar.style.width = `${(audio.currentTime / audio.duration) * 100}%`;
+    });
+
+    miniPlay.addEventListener("click", () => {
+      if (audio.paused) audio.play().catch(() => {});
+      else audio.pause();
+    });
+    miniPrev.addEventListener("click", () => {
+      syncTrack(currentTrack - 1, !audio.paused).catch(() => {});
+      setTimeout(syncMini, 60);
+    });
+    miniNext.addEventListener("click", () => {
+      syncTrack(currentTrack + 1, !audio.paused).catch(() => {});
+      setTimeout(syncMini, 60);
+    });
+    miniMute.addEventListener("click", () => {
+      audio.muted = !audio.muted;
+      miniMute.classList.toggle("muted", audio.muted);
+      miniMute.textContent = audio.muted ? "\u{1F507}" : "\u{1F50A}";
+      try { localStorage.setItem("sixSpiritsMuted", audio.muted ? "1" : "0"); } catch (e) {}
+    });
+    miniClose.addEventListener("click", () => {
+      miniDismissed = true;
+      miniPlayer.classList.remove("visible");
+      setTimeout(() => { miniPlayer.hidden = true; }, 320);
+    });
+    miniProgress.addEventListener("click", event => {
+      if (!audio.duration) return;
+      const rect = miniProgress.getBoundingClientRect();
+      const ratio = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
+      audio.currentTime = ratio * audio.duration;
+    });
+
+    syncMini();
+  }
+
+  // ==========================================================
+  // GALLERY IMAGE LIGHTBOX
+  // ==========================================================
+  const imgLightbox = $("#imgLightbox");
+  if (imgLightbox) {
+    const lbImg = $("#imgLightboxImg");
+    const lbCaption = $("#imgLightboxCaption");
+    const lbClose = $("#imgLightboxClose");
+    const lbPrev = $("#imgLightboxPrev");
+    const lbNext = $("#imgLightboxNext");
+
+    let lbItems = [];
+    let lbIndex = 0;
+
+    const showLb = i => {
+      if (!lbItems.length) return;
+      lbIndex = (i + lbItems.length) % lbItems.length;
+      const item = lbItems[lbIndex];
+      lbImg.src = item.src;
+      lbImg.alt = item.caption;
+      lbCaption.textContent = item.caption;
+      const single = lbItems.length < 2;
+      lbPrev.style.display = single ? "none" : "block";
+      lbNext.style.display = single ? "none" : "block";
+    };
+
+    const openLb = (items, startIndex) => {
+      lbItems = items;
+      imgLightbox.hidden = false;
+      document.body.classList.add("modal-open");
+      showLb(startIndex);
+    };
+    const closeLb = () => {
+      imgLightbox.hidden = true;
+      document.body.classList.remove("modal-open");
+      lbImg.src = "";
+    };
+
+    lbClose.addEventListener("click", closeLb);
+    lbPrev.addEventListener("click", () => showLb(lbIndex - 1));
+    lbNext.addEventListener("click", () => showLb(lbIndex + 1));
+    imgLightbox.addEventListener("click", event => {
+      if (event.target === imgLightbox) closeLb();
+    });
+    document.addEventListener("keydown", event => {
+      if (imgLightbox.hidden) return;
+      if (event.key === "Escape") closeLb();
+      if (event.key === "ArrowLeft") showLb(lbIndex - 1);
+      if (event.key === "ArrowRight") showLb(lbIndex + 1);
+    });
+
+    // Hook archive items
+    if (galleryDetailGrid) {
+      galleryDetailGrid.addEventListener("click", event => {
+        const fig = event.target.closest(".gallery-detail-item");
+        if (!fig) return;
+        const all = $$(".gallery-detail-item", galleryDetailGrid);
+        const items = all
+          .filter(f => {
+            const img = f.querySelector("img");
+            return img && img.style.display !== "none";
+          })
+          .map(f => ({ src: f.dataset.src, caption: f.dataset.caption }));
+        const clickedSrc = fig.dataset.src;
+        const idx = items.findIndex(it => it.src === clickedSrc);
+        if (idx >= 0) openLb(items, idx);
+      });
+      galleryDetailGrid.addEventListener("keydown", event => {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        const fig = event.target.closest(".gallery-detail-item");
+        if (!fig) return;
+        event.preventDefault();
+        fig.click();
+      });
+    }
+  }
+
+  // ==========================================================
+  // GLOSSARY TOOLTIPS
+  // ==========================================================
+  const glossaryTip = $("#glossaryTip");
+  if (glossaryTip) {
+    const glossary = {
+      "\uc2dc\uc9c8": ["SIGIL / \uc2dc\uc9c8", "\uc624\ub978\uc190\ub4f1\uc5d0 \ub098\ud0c0\ub098\ub294 \uce74\ub4dc \ubb38\uc591. \ub2a5\ub825\uc758 \uc99d\ud45c\uc774\uba70 \ubb38\uc591\uc5d0 \ub530\ub77c \ub2a5\ub825 \uacc4\ud1b5\uc774 \ub098\ub25c\ub2e4."],
+      "\ub51c\ub7ec": ["DEALER / \ub51c\ub7ec", "\ud558\uc6b0\uc2a4\uc5d0 \ub4f1\ub85d\ub41c \uc774\ub2a5\ub825\uc790. \uc804\uc801\uacfc \ud0ac\uc5d0 \ub530\ub77c \ube0c\ub860\uc988\ubd80\ud130 \ub2e4\uc774\uc544\ubaac\ub4dc\uae4c\uc9c0 \ub4f1\uae09\uc774 \ub098\ub258\uc5b4\uc9c4\ub2e4."],
+      "\ub9c8\ud06c": ["MARK / \ub9c8\ud06c", "\ub2a5\ub825 \uc5c6\ub294 \uc0ac\ub78c, \ub610\ub294 \ubbf8\ub4f1\ub85d\uc790\ub97c \ub0ae\ucdb0 \ubd80\ub974\ub294 \ub9d0."],
+      "\uce69": ["CHIP / \uce69", "\ud654\ud3d0\uc774\uc790 \ub4f1\ub85d\uad8c. \ubcf4\ud638\uc640 \ud1b5\uc81c\uac00 \ub3d9\uc2dc\uc5d0 \uac78\ub9b0 \uc218\ub2e8."],
+      "\ubc84\uc2a4\ud2b8": ["BURST / \ubc84\uc2a4\ud2b8", "\ub2a5\ub825 \uacfc\ubd80\ud558\ub85c \ubab8\uacfc \ud310\ub2e8\uc774 \ubb34\ub108\uc9c0\ub294 \uc0c1\ud0dc. \uc2dc\uc9c8 \ubc1c\uc5f4\ubd80\ud130 \ud3ed\uc8fc\uae4c\uc9c0 5\ub2e8\uacc4\ub85c \uc9c4\ud589\ub41c\ub2e4."],
+      "\uce90\uc2dc\uc544\uc6c3": ["CASHOUT / \uce90\uc2dc\uc544\uc6c3", "\ub9e4\ub144 1\uc6d4 27\uc77c \uc790\uc815\ubd80\ud130 \uc5ec\uc12f \uc2dc\uac04 \ub3d9\uc548 \uc5f4\ub9ac\ub294 \uac15\uc81c \uc0dd\uc874\uc804."],
+      "\ud558\uc6b0\uc2a4": ["THE HOUSE / \ud558\uc6b0\uc2a4", "\ub51c\ub7ec\ub97c \ub4f1\ub85d\ud558\uace0 \uad00\ub9ac\ud558\ub294 \uac70\ub300 \uad8c\ub825 \uc870\uc9c1. \ubcf4\ud638\uc640 \ud1b5\uc81c\ub97c \ud55c \uc190\uc5d0 \uc950\uace0 \uc788\ub2e4."]
+    };
+
+    const terms = Object.keys(glossary).sort((a, b) => b.length - a.length);
+    const escapeRe = s => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+    // Wrap glossary terms in target sections
+    const targets = ["#world", "#factions", ".quick-brief-board"];
+    const seen = new Set();
+    targets.forEach(sel => {
+      const root = document.querySelector(sel);
+      if (!root) return;
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+        acceptNode(node) {
+          const p = node.parentElement;
+          if (!p) return NodeFilter.FILTER_REJECT;
+          if (p.closest(".glossary-term, h1, h2, script, style, button, .eyebrow")) return NodeFilter.FILTER_REJECT;
+          if (!node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+          return NodeFilter.FILTER_ACCEPT;
+        }
+      });
+      const textNodes = [];
+      let n;
+      while ((n = walker.nextNode())) textNodes.push(n);
+
+      textNodes.forEach(node => {
+        let html = node.nodeValue;
+        let changed = false;
+        terms.forEach(term => {
+          if (seen.has(term)) return;
+          const re = new RegExp(escapeRe(term));
+          if (re.test(html)) {
+            html = html.replace(re, `<span class="glossary-term" data-term="${term}" tabindex="0">${term}</span>`);
+            seen.add(term);
+            changed = true;
+          }
+        });
+        if (changed) {
+          const span = document.createElement("span");
+          span.innerHTML = html;
+          node.parentNode.replaceChild(span, node);
+        }
+      });
+    });
+
+    const showTip = (el) => {
+      const term = el.dataset.term;
+      const entry = glossary[term];
+      if (!entry) return;
+      glossaryTip.innerHTML = `<strong>${entry[0]}</strong>${entry[1]}`;
+      glossaryTip.hidden = false;
+      const rect = el.getBoundingClientRect();
+      requestAnimationFrame(() => {
+        const tipRect = glossaryTip.getBoundingClientRect();
+        let left = rect.left + rect.width / 2 - tipRect.width / 2;
+        left = Math.max(12, Math.min(left, window.innerWidth - tipRect.width - 12));
+        let top = rect.top - tipRect.height - 10;
+        if (top < 12) top = rect.bottom + 10;
+        glossaryTip.style.left = `${left}px`;
+        glossaryTip.style.top = `${top}px`;
+        glossaryTip.classList.add("visible");
+      });
+    };
+    const hideTip = () => {
+      glossaryTip.classList.remove("visible");
+      setTimeout(() => { glossaryTip.hidden = true; }, 200);
+    };
+
+    document.addEventListener("mouseover", event => {
+      const el = event.target.closest(".glossary-term");
+      if (el) showTip(el);
+    });
+    document.addEventListener("mouseout", event => {
+      if (event.target.closest(".glossary-term")) hideTip();
+    });
+    document.addEventListener("focusin", event => {
+      const el = event.target.closest(".glossary-term");
+      if (el) showTip(el);
+    });
+    document.addEventListener("focusout", event => {
+      if (event.target.closest(".glossary-term")) hideTip();
+    });
+    // Mobile tap
+    document.addEventListener("click", event => {
+      const el = event.target.closest(".glossary-term");
+      if (el) {
+        event.preventDefault();
+        if (glossaryTip.classList.contains("visible")) hideTip();
+        else showTip(el);
+      } else if (glossaryTip.classList.contains("visible")) {
+        hideTip();
+      }
+    });
+  }
+
+  // ==========================================================
+  // IMAGE SKELETON LOADING
+  // ==========================================================
+  const attachSkeleton = img => {
+    const parent = img.parentElement;
+    if (!parent || parent.classList.contains("img-skeleton")) return;
+    parent.classList.add("img-skeleton");
+    if (img.complete && img.naturalWidth > 0) {
+      parent.classList.add("loaded");
+      return;
+    }
+    img.addEventListener("load", () => parent.classList.add("loaded"), { once: true });
+    img.addEventListener("error", () => parent.classList.add("loaded"), { once: true });
+  };
+
+  const skeletonObserver = new MutationObserver(mutations => {
+    mutations.forEach(m => {
+      m.addedNodes.forEach(node => {
+        if (node.nodeType !== 1) return;
+        if (node.tagName === "IMG") attachSkeleton(node);
+        node.querySelectorAll && node.querySelectorAll("img").forEach(attachSkeleton);
+      });
+    });
+  });
+  skeletonObserver.observe(document.body, { childList: true, subtree: true });
+  $$("img").forEach(attachSkeleton);
+
 })();
