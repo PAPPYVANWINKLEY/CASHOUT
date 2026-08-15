@@ -11,11 +11,16 @@
     brandSubtitle: ["#brandSubtitle", false],
     heroEyebrow: ["#heroEyebrow", false],
     heroLead: ["#heroLead", true],
+    heroAnnot: ["#heroAnnot", true],
     heroSummary: ["#heroSummary", true],
     quickBriefTitle: ["#quickBriefTitle", true],
     worldIntro: ["#worldIntro", false],
+    worldAnnot: ["#worldAnnot", false],
     originText: ["#originText", false],
+    originAnnot: ["#originAnnot", false],
+    burstAnnot: ["#burstAnnot", false],
     cashoutText: ["#cashoutText", false],
+    cashoutAnnot: ["#cashoutAnnot", false],
     locationsSubtitle: ["#locationsSubtitle", false],
     factionsIntro: ["#factionsIntro", false],
     charactersIntro: ["#charactersIntro", true],
@@ -56,7 +61,7 @@
     header.classList.toggle("menu-open", open);
     document.body.classList.toggle("nav-open", open);
     menuToggle.setAttribute("aria-expanded", String(open));
-    menuToggle.textContent = open ? "CLOSE / 닫기" : "MENU / 목차";
+    menuToggle.textContent = open ? "CLOSE / 그만 보기" : "MENU / 목차는 읽어두자";
   };
 
   setMobileMenu(false);
@@ -170,8 +175,8 @@
           <p class="motto">\u201c${faction.motto}\u201d</p>
           <p>${faction.description}</p>
           <footer>
-            <span>GOAL / \ubaa9\ud45c \u00b7 ${faction.goal}</span>
-            <span>${hasChars ? chars.length + "\uba85 \uc18c\uc18d \u00b7 \ub20c\ub7ec\uc11c \ubcf4\uae30" : "\ub4f1\uc7a5 \uce90\ub9ad\ud130 \uc5c6\uc74c"}</span>
+            <span>AGENDA / 속셈 · ${faction.goal}</span>
+            <span>${hasChars ? chars.length + "명 소속 · 파일 까보기" : "등장 캐릭터 없음 · 아직은"}</span>
           </footer>
         `;
         if (activeFactionId === faction.id) card.classList.add("faction-active");
@@ -255,7 +260,7 @@
         card.dataset.suit = suitMap[character.suit] || "";
         card.setAttribute("aria-label", `${character.ko} \uc0c1\uc138 \ud504\ub85c\ud544 \uc5f4\uae30`);
         card.innerHTML = `
-          ${portraitMarkup(character)}
+          <div class="character-card-portrait">${portraitMarkup(character)}</div>
           <div class="character-card-content">
             <div class="character-card-top"><span class="rank-badge">${character.rank}</span><span class="character-code">FILE ${character.code}</span></div>
             <h3>${character.name}<small>${character.ko}</small></h3>
@@ -285,16 +290,16 @@
     modalCharacter.innerHTML = `
       <div class="modal-portrait">${portraitMarkup(character)}</div>
       <div class="modal-copy">
-        <p class="eyebrow">CHARACTER FILE / 캐릭터 파일 · ${character.code}</p>
+        <p class="eyebrow">CHARACTER FILE / 신상명세서 · ${character.code}</p>
         <h2>${character.name}<small>${character.ko}</small></h2>
         <div class="modal-meta">
           <span>${character.age}세</span><span>${character.origin}</span><span>${character.rank}</span><span>${character.suit} ${character.power}</span>
         </div>
-        <h3>ROLE / CALLSIGN · 역할 / 콜사인</h3><p>${character.role} · ${character.callSign}</p>
-        <h3>PERSONALITY / 성격</h3><p>${character.personality}</p>
-        <h3>HISTORY / 배경</h3><p>${character.history}</p>
-        <h3>DETAILS / 디테일</h3><p>${character.style}. ${character.detail}</p>
-        <h3>WEAPON / 무장</h3><p>${character.weapon}</p>
+        <h3>ROLE / CALLSIGN · 하는 일 / 불리는 이름</h3><p>${character.role} · ${character.callSign}</p>
+        <h3>PERSONALITY / 성격, 혹은 문제의 근원</h3><p>${character.personality}</p>
+        <h3>HISTORY / 왜 이렇게 됐나</h3><p>${character.history}</p>
+        <h3>DETAILS / 쓸데없이 중요한 디테일</h3><p>${character.style}. ${character.detail}</p>
+        <h3>WEAPON / 문제 해결 도구</h3><p>${character.weapon}</p>
         <div class="quote">“${character.quote}”</div>
       </div>
     `;
@@ -874,8 +879,8 @@
       copied = fallbackCopy(text);
     }
     abilityCopyStatus.textContent = copied
-      ? "설정이 복사되었습니다. RP 페르소나란에 그대로 붙여넣으세요."
-      : "복사에 실패했습니다. 텍스트를 직접 선택해 복사해주세요.";
+      ? "복사 완료. 이제 RP 페르소나란에 붙여넣고 책임은 미래의 나에게 넘기세요."
+      : "복사 실패. 기술도 가끔 배신합니다. 직접 선택해서 복사해주세요.";
   };
 
   if (abilitySuitFilters && abilityPresets.length) {
@@ -1184,13 +1189,13 @@
   const glossaryTip = $("#glossaryTip");
   if (glossaryTip) {
     const glossary = {
-      "\uc2dc\uc9c8": ["SIGIL / \uc2dc\uc9c8", "\uc624\ub978\uc190\ub4f1\uc5d0 \ub098\ud0c0\ub098\ub294 \uce74\ub4dc \ubb38\uc591. \ub2a5\ub825\uc758 \uc99d\ud45c\uc774\uba70 \ubb38\uc591\uc5d0 \ub530\ub77c \ub2a5\ub825 \uacc4\ud1b5\uc774 \ub098\ub25c\ub2e4."],
-      "\ub51c\ub7ec": ["DEALER / \ub51c\ub7ec", "\ud558\uc6b0\uc2a4\uc5d0 \ub4f1\ub85d\ub41c \uc774\ub2a5\ub825\uc790. \uc804\uc801\uacfc \ud0ac\uc5d0 \ub530\ub77c \ube0c\ub860\uc988\ubd80\ud130 \ub2e4\uc774\uc544\ubaac\ub4dc\uae4c\uc9c0 \ub4f1\uae09\uc774 \ub098\ub258\uc5b4\uc9c4\ub2e4."],
-      "\ub9c8\ud06c": ["MARK / \ub9c8\ud06c", "\ub2a5\ub825 \uc5c6\ub294 \uc0ac\ub78c, \ub610\ub294 \ubbf8\ub4f1\ub85d\uc790\ub97c \ub0ae\ucdb0 \ubd80\ub974\ub294 \ub9d0."],
-      "\uce69": ["CHIP / \uce69", "\ud654\ud3d0\uc774\uc790 \ub4f1\ub85d\uad8c. \ubcf4\ud638\uc640 \ud1b5\uc81c\uac00 \ub3d9\uc2dc\uc5d0 \uac78\ub9b0 \uc218\ub2e8."],
-      "\ubc84\uc2a4\ud2b8": ["BURST / \ubc84\uc2a4\ud2b8", "\ub2a5\ub825 \uacfc\ubd80\ud558\ub85c \ubab8\uacfc \ud310\ub2e8\uc774 \ubb34\ub108\uc9c0\ub294 \uc0c1\ud0dc. \uc2dc\uc9c8 \ubc1c\uc5f4\ubd80\ud130 \ud3ed\uc8fc\uae4c\uc9c0 5\ub2e8\uacc4\ub85c \uc9c4\ud589\ub41c\ub2e4."],
-      "\uce90\uc2dc\uc544\uc6c3": ["CASHOUT / \uce90\uc2dc\uc544\uc6c3", "\ub9e4\ub144 1\uc6d4 27\uc77c \uc790\uc815\ubd80\ud130 \uc5ec\uc12f \uc2dc\uac04 \ub3d9\uc548 \uc5f4\ub9ac\ub294 \uac15\uc81c \uc0dd\uc874\uc804."],
-      "\ud558\uc6b0\uc2a4": ["THE HOUSE / \ud558\uc6b0\uc2a4", "\ub51c\ub7ec\ub97c \ub4f1\ub85d\ud558\uace0 \uad00\ub9ac\ud558\ub294 \uac70\ub300 \uad8c\ub825 \uc870\uc9c1. \ubcf4\ud638\uc640 \ud1b5\uc81c\ub97c \ud55c \uc190\uc5d0 \uc950\uace0 \uc788\ub2e4."]
+      "시질": ["SIGIL / 시질", "오른손등에 나타나는 카드 문양. 능력의 증표이자 계통표다. 몸에 붙은 사원증인데 퇴사 버튼이 없다."],
+      "딜러": ["DEALER / 딜러", "하우스에 등록된 이능력자. 전적과 킬에 따라 브론즈부터 다이아몬드까지 오른다. 경력 관리가 문자 그대로 살벌하다."],
+      "마크": ["MARK / 마크", "능력 없는 사람 또는 미등록자를 낮춰 부르는 말. 차별은 짧은 단어일수록 휴대가 편한 모양이다."],
+      "칩": ["CHIP / 칩", "화폐이자 등록권이자 생존 자원. 하우스는 사람 목숨에 가격표를 붙이고 디자인까지 카지노답게 맞췄다."],
+      "버스트": ["BURST / 버스트", "능력 과부하로 몸과 판단이 무너지는 상태. 발열, 손떨림, 코피, 감각 왜곡, 폭주 순. 몸이 다섯 번이나 경고해준다."],
+      "캐시아웃": ["CASHOUT / 캐시아웃", "매년 1월 27일 자정부터 여섯 시간 동안 열리는 강제 생존전. 연례행사지만 가족 할인은 없다."],
+      "하우스": ["THE HOUSE / 하우스", "딜러를 등록하고 억제제와 정보망, 캐시아웃까지 관리하는 권력 조직. 보호와 통제를 한 손에 쥔다. 어느 쪽이 엄지인지는 굳이 묻지 말자."]
     };
 
     const terms = Object.keys(glossary).sort((a, b) => b.length - a.length);
@@ -1311,5 +1316,93 @@
   });
   skeletonObserver.observe(document.body, { childList: true, subtree: true });
   $$("img").forEach(attachSkeleton);
+
+
+  /* ============================================================
+     REVISION LAYER — 주석 등장 · 버스트 점화 · 용어 힌트 ·
+                      미니플레이어 접기 · 갤러리 목록 복귀
+     ============================================================ */
+
+  // (1) 주석(.annot)이 화면에 들어오면 왼쪽 세로선이 그어진다.
+  //     내용이 비어 있는 주석은 자리를 차지하지 않도록 숨긴다.
+  $$(".annot").forEach(el => {
+    if (!el.textContent.trim()) el.hidden = true;
+  });
+  const annotObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add("visible");
+      annotObserver.unobserve(entry.target);
+    });
+  }, { threshold: 0.35 });
+  $$(".annot").forEach(el => annotObserver.observe(el));
+
+  // (2) 버스트 트랙: 스크롤 진행에 따라 01 -> 05 로 붉게 물든다.
+  const burstBoard = $(".system-board");
+  const burstItems = $$(".burst-track li");
+  if (burstBoard && burstItems.length) {
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const paintBurst = () => {
+      const rect = burstBoard.getBoundingClientRect();
+      const vh = window.innerHeight || 1;
+      const progress = Math.min(1, Math.max(0, (vh * 0.85 - rect.top) / (rect.height + vh * 0.35)));
+      const lit = Math.round(progress * burstItems.length);
+      burstItems.forEach((li, i) => {
+        const on = i < lit;
+        li.classList.toggle("lit", on);
+        if (on) li.style.setProperty("--lit", (0.04 + i * 0.035).toFixed(3));
+      });
+      burstBoard.classList.toggle("burning", progress > 0.6);
+    };
+    if (reduceMotion) {
+      burstItems.forEach((li, i) => { li.classList.add("lit"); li.style.setProperty("--lit", (0.04 + i * 0.035).toFixed(3)); });
+    } else {
+      paintBurst();
+      window.addEventListener("scroll", paintBurst, { passive: true });
+      window.addEventListener("resize", paintBurst);
+    }
+  }
+
+  // (3) 용어 툴팁: 첫 진입 때 첫 번째 용어만 한 번 깜빡여 알려준다.
+  const firstTerm = $(".glossary-term");
+  if (firstTerm) {
+    const hintObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        firstTerm.classList.add("hint-pulse");
+        setTimeout(() => firstTerm.classList.remove("hint-pulse"), 5200);
+        hintObserver.disconnect();
+      });
+    }, { threshold: 1 });
+    hintObserver.observe(firstTerm);
+  }
+
+  // (4) 미니 플레이어 접기 (모바일에서는 기본 접힘)
+  const miniPlayerEl = $("#miniPlayer");
+  const miniHandle = $("#miniHandle");
+  if (miniPlayerEl && miniHandle) {
+    if (window.matchMedia("(max-width: 720px)").matches) miniPlayerEl.classList.add("collapsed");
+    miniHandle.addEventListener("click", () => miniPlayerEl.classList.toggle("collapsed"));
+  }
+
+  // (5) 갤러리 상세 하단 -> 캐릭터 목록으로 복귀
+  const galleryBackTop = $("#galleryBackTop");
+  const galleryGridEl = $("#galleryGrid");
+  const galleryDetailEl = $("#galleryDetail");
+  if (galleryBackTop && galleryGridEl) {
+    galleryBackTop.addEventListener("click", () => {
+      const headerH = ($(".site-header") || {}).offsetHeight || 64;
+      const tickerH = ($(".ticker") || {}).offsetHeight || 0;
+      const top = galleryGridEl.getBoundingClientRect().top + window.scrollY - headerH - tickerH - 20;
+      window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+    });
+  }
+  // 상세가 열려 있는 동안에만 하단 복귀 버튼이 의미가 있으므로 상태를 맞춰둔다.
+  if (galleryDetailEl && galleryBackTop) {
+    const detailStateObserver = new MutationObserver(() => {
+      galleryBackTop.disabled = galleryDetailEl.hidden;
+    });
+    detailStateObserver.observe(galleryDetailEl, { attributes: true, attributeFilter: ["hidden"] });
+  }
 
 })();

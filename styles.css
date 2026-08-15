@@ -2127,3 +2127,267 @@ body.ability-cinematic-open {
   .img-lightbox img { animation: none !important; }
   .img-lightbox { opacity: 1; }
 }
+
+
+/* ==========================================================
+   v2 — Character cards: portrait and identity block separated
+   ========================================================== */
+.character-card {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--panel);
+}
+.character-card::after { display: none; }
+.character-card-portrait {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: #0d0b10;
+  border-bottom: 1px solid var(--line);
+}
+.character-card-portrait::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 12%;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent, rgba(8,7,10,.18));
+}
+.character-card-portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 18%;
+}
+.character-card-content {
+  position: relative;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  padding: 18px 20px 20px;
+  min-height: 142px;
+  background: linear-gradient(180deg, rgba(18,15,21,.98), rgba(11,9,13,1));
+}
+.character-card h3 { margin-top: 12px; font-size: 29px; }
+.character-card h3 small { margin-top: 6px; }
+.character-role { margin-top: 11px; }
+.character-power { margin-top: 3px; }
+.character-card:hover .character-card-portrait img { transform: scale(1.035); }
+.character-card .image-fallback { position: absolute; inset: 0; }
+
+@media (max-width: 680px) {
+  .character-card { min-height: 0; }
+  .character-card-content { min-height: 132px; padding: 17px 18px 19px; }
+  .character-card h3 { font-size: 28px; }
+}
+
+/* ============================================================
+   REVISION LAYER — 2성부 화자 · 세력 컬러 · 가독성 보정
+   이 블록은 기존 스타일 뒤에 얹혀 덮어씁니다.
+   ============================================================ */
+
+:root {
+  /* 프루프 쪽 목소리(주석) 컬러 — 하우스의 금색과 대립하는 네온 */
+  --annot: #6fd6c4;
+  --annot-soft: rgba(111, 214, 196, .32);
+
+  /* 세력 컬러 토큰 */
+  --fac-six-spirits: #6fd6c4;
+  --fac-house: #d2ae63;
+  --fac-ledger: #b9a48b;
+  --fac-bda: #7f93b8;
+  --fac-red-chapel: #e23d50;
+  --fac-uncut: #9a8fb5;
+}
+
+/* ---------- (2) 여백의 주석 ---------- */
+.annot {
+  position: relative;
+  max-width: 640px;
+  margin: 14px 0 0;
+  padding: 2px 0 2px 16px;
+  border-left: 2px solid var(--annot-soft);
+  color: var(--annot);
+  font-size: 14px;
+  font-style: italic;
+  line-height: 1.75;
+  letter-spacing: .01em;
+  transform: rotate(-.22deg);
+  opacity: .92;
+}
+.annot::before {
+  content: "";
+  position: absolute;
+  left: -1px;
+  top: 0;
+  width: 2px;
+  height: 0;
+  background: var(--annot);
+  transition: height .7s cubic-bezier(.2,.7,.3,1) .15s;
+}
+.reveal.visible .annot::before,
+.annot.visible::before { height: 100%; }
+.hero-copy .annot { margin: 10px 0 22px; font-size: clamp(13px, 1.3vw, 16px); }
+.system-board .annot,
+.cashout-board .annot { margin-top: 20px; }
+.lore-card .annot { font-size: 13px; margin-top: 12px; }
+
+/* ---------- (1) 국문 헤드라인을 주인공으로 ---------- */
+.hero-lead {
+  font-family: Pretendard, "Noto Sans KR", Inter, sans-serif;
+  font-size: clamp(22px, 2.6vw, 34px);
+  font-weight: 800;
+  letter-spacing: -.02em;
+  line-height: 1.35;
+  margin-bottom: 0;
+}
+.quick-brief-heading h2,
+.system-title h3,
+.cashout-board h3 {
+  font-family: Pretendard, "Noto Sans KR", Georgia, serif;
+  font-weight: 800;
+  letter-spacing: -.025em;
+  line-height: 1.3;
+}
+.quick-brief-heading h2 { font-size: clamp(28px, 3.4vw, 46px); }
+.cashout-board h3 { font-size: clamp(22px, 2.6vw, 34px); }
+
+/* ---------- 세력 카드 컬러 ---------- */
+.faction-card { border-top: 2px solid transparent; transition: transform .3s, border-color .3s, box-shadow .3s; }
+.faction-card[data-faction-id="six-spirits"] { border-top-color: var(--fac-six-spirits); }
+.faction-card[data-faction-id="house"]       { border-top-color: var(--fac-house); }
+.faction-card[data-faction-id="ledger"]      { border-top-color: var(--fac-ledger); }
+.faction-card[data-faction-id="bda"]         { border-top-color: var(--fac-bda); }
+.faction-card[data-faction-id="red-chapel"]  { border-top-color: var(--fac-red-chapel); }
+.faction-card[data-faction-id="uncut"]       { border-top-color: var(--fac-uncut); }
+
+.faction-card[data-faction-id="six-spirits"] .tag { color: var(--fac-six-spirits); border-color: rgba(111,214,196,.35); }
+.faction-card[data-faction-id="bda"] .tag         { color: var(--fac-bda); border-color: rgba(127,147,184,.35); }
+.faction-card[data-faction-id="red-chapel"] .tag  { color: var(--fac-red-chapel); border-color: rgba(226,61,80,.35); }
+.faction-card[data-faction-id="uncut"] .tag       { color: var(--fac-uncut); border-color: rgba(154,143,181,.35); }
+.faction-card[data-faction-id="ledger"] .tag      { color: var(--fac-ledger); border-color: rgba(185,164,139,.35); }
+
+.faction-card[data-faction-id="six-spirits"]:hover { border-color: rgba(111,214,196,.45); box-shadow: 0 18px 50px rgba(111,214,196,.09); }
+.faction-card[data-faction-id="red-chapel"]:hover  { border-color: rgba(226,61,80,.45);  box-shadow: 0 18px 50px rgba(226,61,80,.1); }
+.faction-card[data-faction-id="bda"]:hover         { border-color: rgba(127,147,184,.45); }
+.faction-card[data-faction-id="uncut"]:hover       { border-color: rgba(154,143,181,.45); }
+.faction-card.featured { background: linear-gradient(125deg, rgba(111,214,196,.13), rgba(255,255,255,.018)); }
+
+/* ---------- 카드 포일 반사 ---------- */
+.character-card, .faction-card, .ability-result { position: relative; overflow: hidden; }
+.character-card::before, .faction-card::before {
+  content: "";
+  position: absolute;
+  inset: -40%;
+  pointer-events: none;
+  z-index: 3;
+  opacity: 0;
+  transition: opacity .4s;
+  background: conic-gradient(from 210deg,
+    transparent 0deg, rgba(255,255,255,.10) 55deg, transparent 110deg,
+    rgba(111,214,196,.09) 175deg, transparent 235deg, rgba(210,174,99,.10) 300deg, transparent 360deg);
+  mix-blend-mode: overlay;
+  animation: foilTurn 7s linear infinite paused;
+}
+.character-card:hover::before, .faction-card:hover::before { opacity: 1; animation-play-state: running; }
+@keyframes foilTurn { to { transform: rotate(360deg); } }
+
+/* ---------- 버스트: 스크롤할수록 붉어진다 ---------- */
+.burst-track li { transition: color .5s, border-color .5s, background .5s; }
+.burst-track li.lit { background: linear-gradient(90deg, rgba(186,36,53,var(--lit, .05)), transparent 70%); }
+.burst-track li.lit span { text-shadow: 0 0 14px rgba(226,61,80,calc(var(--lit, .05) * 6)); }
+.burst-track li.lit strong { color: var(--ink); }
+.system-board { transition: box-shadow .6s; }
+.system-board.burning { box-shadow: inset 0 0 120px rgba(186,36,53,.10); }
+
+/* ---------- 용어 툴팁 발견성 ---------- */
+.glossary-term {
+  border-bottom: 1px dashed rgba(210,174,99,.65);
+  color: var(--gold);
+  cursor: help;
+  padding-bottom: 1px;
+  transition: border-color .25s, color .25s;
+}
+.glossary-term:hover, .glossary-term:focus-visible { border-bottom-style: solid; color: #f0d79a; }
+.glossary-term.hint-pulse { animation: glossHint 1.6s ease-in-out 3; }
+@keyframes glossHint {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(210,174,99,0); }
+  45%      { box-shadow: 0 0 0 5px rgba(210,174,99,.14); }
+}
+
+/* ---------- 미니 플레이어: 접힘 상태 ---------- */
+.mini-handle {
+  display: none;
+  width: 30px; height: 30px;
+  flex: 0 0 auto;
+  align-items: center; justify-content: center;
+  border: 1px solid var(--line-gold);
+  background: transparent;
+  color: var(--gold);
+  font-size: 14px;
+  cursor: pointer;
+}
+.mini-player.collapsed { gap: 0; padding: 6px; max-width: 46px; }
+.mini-player.collapsed > *:not(.mini-handle) { display: none; }
+.mini-player.collapsed .mini-handle { display: flex; }
+
+@media (max-width: 720px) {
+  .mini-handle { display: flex; }
+  .mini-player { gap: 6px; padding: 6px 8px; }
+  .annot { font-size: 13px; padding-left: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .annot { transform: none; }
+  .annot::before { transition: none; height: 100%; }
+  .character-card::before, .faction-card::before { animation: none; }
+  .glossary-term.hint-pulse { animation: none; }
+}
+
+/* ---------- 갤러리 상세: 목록 복귀 버튼 ---------- */
+.gallery-detail-foot {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  margin-top: 26px;
+  padding: 18px 0 4px;
+  background: linear-gradient(180deg, rgba(8,7,10,0), rgba(8,7,10,.88) 42%);
+}
+.gallery-back-top {
+  border: 1px solid var(--line-gold);
+  background: rgba(13,11,15,.92);
+  backdrop-filter: blur(10px);
+  padding: 13px 26px;
+  color: var(--gold);
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .14em;
+  transition: border-color .25s, color .25s, transform .25s, background .25s;
+}
+.gallery-back-top:hover {
+  border-color: var(--gold);
+  color: #f0d79a;
+  background: rgba(210,174,99,.09);
+  transform: translateY(-2px);
+}
+.gallery-back-top:disabled { display: none; }
+
+/* ---------- 세력 상세: 그동안 노출되지 않던 인트로 카피 자리 ---------- */
+.faction-characters-intro {
+  max-width: 720px;
+  margin: 0 0 6px;
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.75;
+}
+.faction-characters-intro .intro-note { color: var(--muted); font-size: 13px; }
+
+@media (max-width: 720px) {
+  .gallery-back-top { width: 100%; padding: 14px 12px; }
+  .faction-characters-intro { font-size: 13.5px; }
+}
