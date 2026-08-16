@@ -34,27 +34,27 @@ window.SIX_SPIRITS_EDIT = {
 
     quickBriefTitle: "설명서 안 읽을 귀차니스트를 위한<br>다섯 줄.",
 
-    worldIntro: "1951년 네바다에서 핵을 터뜨렸다. 놀랍게도 좋은 아이디어가 아니었다. 일부 생존자의 오른손에 카드 문양이 나타났고, 정부는 덮었고, 카지노는 장부를 폈다. 그렇게 보호와 통제를 한 손에 쥔 딜러 생태계, 하우스가 태어났다.",
+    worldIntro: "1951년 네바다에서 핵을 터뜨렸다. 좋은 아이디어는 아니었다. 일부 생존자의 오른손에 카드 문양(시질)이 나타났고, 정부는 덮었고, 카지노는 장부를 폈다. 그렇게 보호와 통제를 한 손에 쥔 딜러 생태계, 하우스가 태어났다.",
     worldAnnot: "'관리'라는 말은 참 편리하다. 목줄에도 붙일 수 있으니까.",
 
     originText: "핵실험 뒤 생존자와 인근 주민에게 카드 문양의 힘이 나타났다. 정부는 국가 기밀로 묶었고, 1960년대 카지노 자본과 손잡고 능력 보유자를 등록·추적하기 시작했다. 비공식 관리망은 장부가 두꺼워질수록 권력이 됐고, 지금은 하우스라 불린다.",
     originAnnot: "카지노가 사람까지 회원제로 만든 셈이다.",
 
-    burstAnnot: "축하한다.",
+    burstAnnot: "축하한다. 네 몸이 사표를 던졌다. 능력은 계속 출근중인데.",
 
     cashoutText: "매년 1월 27일 자정, 베가스 전역이 여섯 시간짜리 사냥터가 된다. 딜러는 서로의 칩을 뺏어 랭킹을 올리고, 살아남아도 일부는 레이크로 하우스에 바친다.",
     cashoutAnnot: "이겨도 수수료는 낸다. 카지노가 괜히 카지노겠나.",
     locationsSubtitle: "오늘 밤 사고 치기 좋은 열한 군데",
 
     factionsIntro: "질서, 자유, 생존, 신앙. 간판은 제각각이다. 사람을 자기 판 위에 올려놓고 싶다는 점에서는 놀랍도록 의견이 잘 맞는다.",
-    charactersIntro: "좋은 소식: 여기 있는 사람들은 유능하다. 나쁜 소식: 그래서 더 위험하다. 웃음도 친절도 협박도 대개 목적지가 있다. <br><span class='intro-note'>(카드를 눌러 남의 패를 까보세요. 이럴 때 쓰라고 만든 버튼입니다.)</span>",
+    charactersIntro: "좋은 소식: 여기 있는 사람들은 유능하다.<br>나쁜 소식: 그래서 더 위험하다. 웃음도 친절도 협박도 대개 목적지가 있다. <br><span class='intro-note'>(카드를 눌러 프로필을 열어보세요. 이럴 때 쓰라고 만든 버튼입니다.)</span>",
     soundtrackIntro: "사람이 죽고 도시가 불타도 BGM은 필요하다. 분위기는 죄가 없으니까.",
     abilityIntro: "문양을 고르거나 그냥 운명에 맡기세요. 능력은 랜덤, 제약은 기본 옵션, 버스트 위험은 환불 불가입니다.",
-    galleryIntro: "증거 사진 모음. 다들 살아 있을 때 찍힌 게 제일 보기 좋습니다. <br><span class='intro-note'>(일반 이미지만 수록. 언세이프 이미지는 스토리 고정댓글 쪽입니다. 네, 분리수거는 중요합니다.)</span>",
+    galleryIntro: "증거 사진 모음. 다들 살아 있을 때 찍힌 게 보기 좋군요. <br><span class='intro-note'>(일반 이미지만 수록. 언세이프 이미지는 스토리 고정댓글 쪽입니다. 야한 건 직접 알아내는 맛이 있으니까.)</span>",
 
     closingEyebrow: "WELCOME TO PROOF / 여기까지 내려왔으면 한 잔은 자격 있습니다",
     footerLeft: "SIX SPIRITS · RP WORLD GUIDE / 세계관 안내, 생존 보장은 별도",
-    footerRight: "FREMONT, LAS VEGAS · 좋은 동네입니다. 밤만 빼면"
+    footerRight: "FREMONT, LAS VEGAS · 좋은 동네입니다. 어디든 밤엔 조심해야 하니까요."
   },
 
   bgm: {
@@ -103,7 +103,7 @@ window.SIX_SPIRITS_EDIT = {
         title: "COLD MERCY",
         artist: "SIX SPIRITS ORIGINAL SOUNDTRACK",
         scene: "BLACK CLINIC / 블랙 클리닉",
-        description: "블랙 클리닉의 테마. 살아서 들어왔다면 절반은 성공이다. 나머지 절반은 엘리아 몫.",
+        description: "블랙 클리닉의 테마. 살아서 들어왔다면 절반은 성공이다.",
         duration: "--:--",
         url: "https://i.cpvw.uk/6SC/ost/M04.mp3"
       },
