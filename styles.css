@@ -2467,3 +2467,8 @@ body.gated .hero-copy { animation: gateRise .9s cubic-bezier(.2,.7,.3,1) both; }
   body.gated .hero-copy { animation: none; }
   .enter-curtain { transition: none; }
 }
+
+/* 입장한 뒤에는 게이트 잔재를 치운다 — 히어로로 되돌아와도 버튼이 남지 않도록 */
+body.entered .hero-actions,
+body.entered .enter-hint { display: none; }
+body.entered .hero-copy > *:last-child { margin-bottom: 0; }
