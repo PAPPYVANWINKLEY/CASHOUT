@@ -2391,3 +2391,79 @@ body.ability-cinematic-open {
   .gallery-back-top { width: 100%; padding: 14px 12px; }
   .faction-characters-intro { font-size: 13.5px; }
 }
+
+/* ============================================================
+   입장 게이트 — 첫 화면은 히어로 하나만 보인다
+   ============================================================ */
+html.gated,
+body.gated { overflow: hidden !important; overscroll-behavior: none; }
+
+body.gated main > section:not(.hero),
+body.gated .site-footer,
+body.gated .fab-top,
+body.gated .mini-player,
+body.gated .deep-link-play { display: none !important; }
+
+body.gated .site-header,
+body.gated .site-nav,
+body.gated .ticker {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .5s ease;
+}
+body.gated .scroll-cue { opacity: 0; }
+
+body.gated .hero {
+  min-height: 100svh;
+  min-height: 100vh;
+  padding-top: 12vh;
+  padding-bottom: 12vh;
+}
+body.gated .hero-deco { opacity: 1; }
+
+/* 입장 후: 상단 요소들이 부드럽게 돌아온다 */
+body.entered .site-header,
+body.entered .site-nav,
+body.entered .ticker { transition: opacity .6s ease .05s; }
+
+.enter-curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: #08070a;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .27s ease;
+}
+.enter-curtain.on { opacity: 1; }
+
+.enter-hint {
+  max-width: 520px;
+  margin: 16px 0 0;
+  padding: 11px 14px;
+  border: 1px solid var(--line-gold);
+  background: rgba(210, 174, 99, .06);
+  color: var(--gold);
+  font-size: 12px;
+  letter-spacing: .02em;
+  line-height: 1.6;
+}
+.enter-hint strong { color: #f0d79a; font-weight: 800; }
+.enter-hint[hidden] { display: none; }
+
+/* 게이트가 열려 있는 동안 히어로 카피가 천천히 떠오른다 */
+body.gated .hero-copy { animation: gateRise .9s cubic-bezier(.2,.7,.3,1) both; }
+@keyframes gateRise {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (max-width: 720px) {
+  body.gated .hero { padding-top: 9vh; padding-bottom: 9vh; }
+  .enter-hint { font-size: 11.5px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.gated .hero-copy { animation: none; }
+  .enter-curtain { transition: none; }
+}

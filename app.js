@@ -547,42 +547,65 @@
     syncTrack(currentTrack + 1, true).catch(() => {});
   });
 
-  // Browsers block sound autoplay before a user gesture.
-  // The main Enter button supplies that gesture and starts the selected track.
-  const enterFloor = $("#enterFloor");
-  if (enterFloor && bgmSettings.startOnEnter !== false) {
-    enterFloor.addEventListener("click", () => {
-      const playable = tracks.map((t, i) => [t, i]).filter(([t]) => isDirectAudio(t.url));
-      if (!playable.length) return;
-      const [track, startIndex] = playable[Math.floor(Math.random() * playable.length)];
-      syncTrack(startIndex, true).catch(() => {});
-    });
-  }
-
+  // ------------------------------------------------------------------
   // BGM deep links for RP prompts: ?bgm=M01
+  //
+  // Browsers refuse audio.play() until the page has received a real user
+  // gesture. Arriving via a link is NOT such a gesture, so an unattended
+  // autoplay attempt on load is rejected in Chrome, Safari, and every
+  // in-app browser (KakaoTalk, Discord, Instagram...).
+  //
+  // The entry gate solves this: the visitor must click "입장하기" to get in,
+  // and that single click is the gesture that unlocks playback. We still try
+  // to play right away in case the browser happens to allow it.
+  // ------------------------------------------------------------------
   const bgmParams = new URLSearchParams(window.location.search);
   const requestedBgm = (bgmParams.get("bgm") || "").trim().toUpperCase();
-  if (requestedBgm) {
-    const requestedIndex = tracks.findIndex(track => String(track.code || "").toUpperCase() === requestedBgm);
-    if (requestedIndex >= 0) {
-      // Prevent the browser from restoring an older scroll position over the requested track.
-      if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+  const deepLinkIndex = requestedBgm
+    ? tracks.findIndex(track => String(track.code || "").toUpperCase() === requestedBgm)
+    : -1;
+  const deepLinkTrack = deepLinkIndex >= 0 ? tracks[deepLinkIndex] : null;
 
-      // Select and attempt playback immediately. Delaying play() makes transient activation less useful.
-      syncTrack(requestedIndex, true)
+  if (deepLinkIndex >= 0) {
+    // Prevent the browser from restoring an older scroll position over the requested track.
+    if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+    // Preload so playback starts instantly the moment the gate is opened.
+    if (isDirectAudio(deepLinkTrack.url)) {
+      audio.preload = "auto";
+      syncTrack(deepLinkIndex, true)
         .then(removeDeepLinkPlayButton)
-        .catch(() => showDeepLinkPlayButton(requestedIndex));
-
-      // Layout, fonts and in-app browsers can settle at different times, so focus the exact row more than once.
-      const focusRequestedTrack = behavior => {
-        requestAnimationFrame(() => requestAnimationFrame(() => focusTrackRow(requestedIndex, behavior)));
-      };
-      focusRequestedTrack("auto");
-      window.setTimeout(() => focusRequestedTrack("auto"), 260);
-      window.addEventListener("load", () => {
-        window.setTimeout(() => focusRequestedTrack("smooth"), 80);
-      }, { once: true });
+        .catch(() => {
+          // Blocked, as expected. The gate click will handle it.
+          if (!document.body.classList.contains("gated")) showDeepLinkPlayButton(deepLinkIndex);
+        });
+    } else {
+      syncTrack(deepLinkIndex);
     }
+  }
+
+  // Called from the entry gate click handler, synchronously, so the gesture counts.
+  const startBgmOnEnter = () => {
+    if (deepLinkIndex >= 0) {
+      if (!isDirectAudio(deepLinkTrack.url)) return;
+      syncTrack(deepLinkIndex, true)
+        .then(removeDeepLinkPlayButton)
+        .catch(() => showDeepLinkPlayButton(deepLinkIndex));
+      return;
+    }
+    if (bgmSettings.startOnEnter === false) return;
+    const playable = tracks.map((t, i) => [t, i]).filter(([t]) => isDirectAudio(t.url));
+    if (!playable.length) return;
+    const [, startIndex] = playable[Math.floor(Math.random() * playable.length)];
+    syncTrack(startIndex, true).catch(() => {});
+  };
+
+  // Tell the visitor which track the link asked for, right on the gate.
+  const enterHint = $("#enterHint");
+  const enterFloor = $("#enterFloor");
+  if (deepLinkTrack && enterHint) {
+    enterHint.hidden = false;
+    enterHint.innerHTML = `♪ 요청된 BGM <strong>${deepLinkTrack.code} ${deepLinkTrack.title}</strong> — 입장과 동시에 재생됩니다.`;
+    if (enterFloor) enterFloor.textContent = `▶ PLAY & ENTER / ${deepLinkTrack.title} 재생하고 입장`;
   }
 
 
@@ -1403,6 +1426,62 @@
       galleryBackTop.disabled = galleryDetailEl.hidden;
     });
     detailStateObserver.observe(galleryDetailEl, { attributes: true, attributeFilter: ["hidden"] });
+  }
+
+
+  // (6) 입장 게이트 — 첫 화면은 히어로 하나만. 버튼을 눌러야 안으로 들어간다.
+  const gateButton = $("#enterFloor");
+  const enterCurtain = $("#enterCurtain");
+  let gateOpened = false;
+
+  const openGate = () => {
+    if (gateOpened) return;
+    gateOpened = true;
+
+    // 이 호출은 클릭 핸들러 안에서 동기적으로 일어나야 브라우저가
+    // 사용자 제스처로 인정하고 오디오 재생을 허용한다.
+    startBgmOnEnter();
+
+    if (enterCurtain) enterCurtain.classList.add("on");
+    window.setTimeout(() => {
+      document.documentElement.classList.remove("gated");
+      document.body.classList.remove("gated");
+      document.body.classList.add("entered");
+
+      // ?bgm= 로 들어온 방문자는 해당 트랙 앞으로, 그 외에는 빠른 요약으로.
+      const target = deepLinkIndex >= 0 ? $("#soundtrack") : $("#quick-brief");
+      if (target) {
+        const headerH = ($(".site-header") || {}).offsetHeight || 64;
+        const tickerH = ($(".ticker") || {}).offsetHeight || 0;
+        const top = target.getBoundingClientRect().top + window.scrollY - headerH - tickerH - 16;
+        window.scrollTo({ top: Math.max(0, top), behavior: "auto" });
+      }
+      if (deepLinkIndex >= 0) {
+        window.setTimeout(() => focusTrackRow(deepLinkIndex, "auto"), 80);
+      }
+      if (enterCurtain) enterCurtain.classList.remove("on");
+    }, 270);
+  };
+
+  if (gateButton) {
+    gateButton.addEventListener("click", event => {
+      if (!document.body.classList.contains("gated")) return; // 이미 들어온 뒤에는 평범한 앵커 링크
+      event.preventDefault();
+      openGate();
+    });
+  }
+  // 게이트가 열리기 전에는 Enter/Space 로도 들어갈 수 있게
+  document.addEventListener("keydown", event => {
+    if (!document.body.classList.contains("gated")) return;
+    if (event.key === "Enter" || event.key === " " || event.key === "ArrowDown" || event.key === "PageDown") {
+      event.preventDefault();
+      openGate();
+    }
+  });
+  // 안전장치: 어떤 이유로든 버튼이 없으면 게이트를 걸어두지 않는다.
+  if (!gateButton) {
+    document.documentElement.classList.remove("gated");
+    document.body.classList.remove("gated");
   }
 
 })();
