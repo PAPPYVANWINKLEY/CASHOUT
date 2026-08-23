@@ -978,7 +978,7 @@
 
     galleryDetail.hidden = false;
     galleryDetailTitle.textContent = `${character.ko} / ${character.name}`;
-    galleryDetailDesc.textContent = `${character.role} · ${character.callSign} · 일반 이미지 00~21 및 49, 50`;
+    galleryDetailDesc.textContent = `${character.role} · ${character.callSign} · 일반 이미지 00~20`;
     galleryDetailGrid.innerHTML = "";
 
     generalScenes.forEach((scene, index) => {

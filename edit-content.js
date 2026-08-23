@@ -50,7 +50,7 @@ window.SIX_SPIRITS_EDIT = {
     charactersIntro: "좋은 소식: 여기 있는 사람들은 유능하다.<br>나쁜 소식: 그래서 더 위험하다. 웃음도 친절도 협박도 대개 목적지가 있다. <br><span class='intro-note'>(카드를 눌러 프로필을 열어보세요. 이럴 때 쓰라고 만든 버튼입니다.)</span>",
     soundtrackIntro: "사람이 죽고 도시가 불타도 BGM은 필요하다. 분위기는 죄가 없으니까.",
     abilityIntro: "문양을 고르거나 그냥 운명에 맡기세요. 능력은 랜덤, 제약은 기본 옵션, 버스트 위험은 환불 불가입니다.",
-    galleryIntro: "증거 사진 모음. 다들 살아 있을 때 찍힌 게 보기 좋군요. <br><span class='intro-note'>(일반 이미지만 수록. 언세이프 이미지는 스토리 고정댓글 쪽입니다. 야한 건 직접 알아내는 맛이 있으니까.)</span>",
+    galleryIntro: "증거 사진 모음. 다들 살아 있을 때 찍힌 게 보기 좋군요. <br><span class='intro-note'>(일반 이미지만 수록. 언세이프 이미지는 언세이프 스토리 고정댓글 참조)</span>",
 
     closingEyebrow: "WELCOME TO PROOF / 여기까지 내려왔으면 한 잔은 자격 있습니다",
     footerLeft: "SIX SPIRITS · RP WORLD GUIDE / 세계관 안내, 생존 보장은 별도",
