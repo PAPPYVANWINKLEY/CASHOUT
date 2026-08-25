@@ -106,10 +106,239 @@
       navLinks.forEach(link => link.classList.toggle("active", link.getAttribute("href") === `#${entry.target.id}`));
     });
   }, { rootMargin: "-35% 0px -55% 0px" });
-  ["world", "factions", "soundtrack", "ability-generator", "gallery"].forEach(id => {
+  ["world", "factions", "relations", "soundtrack", "ability-generator", "gallery"].forEach(id => {
     const section = document.getElementById(id);
     if (section) sectionObserver.observe(section);
   });
+
+
+  // Relationship map — embedded directly into the main page.
+  // Portraits use the named thumbnail files (Kayla.png, Jackie.png, etc.),
+  // not the scene-code /00.png parser used by character galleries.
+  const relationStage = $("#relationStage");
+  const relationWires = $("#relationWires");
+  const relationPanel = $("#relationPanel");
+  const relationRoster = $("#relationRoster");
+
+  if (relationStage && relationWires && relationPanel && relationRoster) {
+    const RELATION_NODES = [
+      {id:"kayla", nm:"케일라 워커", en:"Kayla Walker", rl:"리더", cs:"버팔로 트레이스", pw:"♠ 중력부여", rk:"플래티넘", side:"gold", x:29, y:21, img:"https://i.cpvw.uk/6SC/Kayla.png"},
+      {id:"jackie", nm:"재키 분", en:"Jackie Boone", rl:"브리쳐", cs:"와일드 터키", pw:"♦ 폭발에너지주입", rk:"골드", side:"gold", x:20, y:53, img:"https://i.cpvw.uk/6SC/Jackie.png"},
+      {id:"elia", nm:"엘리아 머서", en:"Eliana Mercer", rl:"메딕", cs:"메이커스 마크", pw:"♥ 생체감응", rk:"실버", side:"gold", x:32, y:83, img:"https://i.cpvw.uk/6SC/Elia.png"},
+      {id:"adri", nm:"아드리엔 로랑", en:"Adrienne Laurent", rl:"전략가", cs:"그레이 구스", pw:"♣ 확률간섭", rk:"플래티넘", side:"ice", x:71, y:21, img:"https://i.cpvw.uk/6SC/Adrien.png"},
+      {id:"mika", nm:"미케일라 코왈스키", en:"Mikaela Kowalski", rl:"저격", cs:"벨베디어", pw:"♠ 스나이핑", rk:"골드", side:"ice", x:80, y:53, img:"https://i.cpvw.uk/6SC/Mikaela.png"},
+      {id:"maria", nm:"마리아 킹", en:"Maria King", rl:"침투·대외", cs:"씨락", pw:"♥ 감정주파수", rk:"골드", side:"ice", x:68, y:83, img:"https://i.cpvw.uk/6SC/Maria.png"},
+      {id:"victor", nm:"빅터 셰인", en:"Victor Shane", rl:"더 렛저 집행국장", cs:"클로저", pw:"♣ 계약기반언령", rk:"다이아몬드", side:"out", x:6, y:10, outer:true, img:"https://i.cpvw.uk/6SC/Victor.png"},
+      {id:"cass", nm:"카시언 크로우", en:"Cassian Crow", rl:"하우스 총괄", cs:"뱅커", pw:"♥ 어웨이크닝", rk:"다이아몬드", side:"out", x:94, y:10, outer:true, img:"https://i.cpvw.uk/6SC/Cassian.png"},
+      {id:"luca", nm:"루카 헤일", en:"Luca Hale", rl:"언컷 운반책", cs:"스파크", pw:"♦ 열분해", rk:"미등록", side:"out", x:6, y:90, outer:true, img:"https://i.cpvw.uk/6SC/Luca.png"},
+      {id:"sera", nm:"세라핀 크로우", en:"Seraphine Crow", rl:"레드 채플 리더", cs:"블러디 메리", pw:"♥ 광신유도", rk:"플래티넘", side:"out", x:94, y:90, outer:true, img:"https://i.cpvw.uk/6SC/Seraphine.png"}
+    ];
+
+    const RELATION_EDGES = [
+      {a:"kayla", b:"elia", t:"inner", side:"gold", lb:"자매 같은 사이", tx:"피가 안 섞인 자매. 케일라는 물건으로 챙기고 엘리아는 심박수로 챙긴다. 둘 다 자기 상태는 보고하지 않는다."},
+      {a:"kayla", b:"jackie", t:"inner", side:"gold", lb:"등을 맡기는 사이", tx:"말을 맞춘 적이 없는데 등이 먼저 맞는다. 재키가 부탁을 못 하는 사람이라 케일라가 먼저 자리를 잡아둔다. 재키의 계약을 아는 유일한 팀원이기도 하다."},
+      {a:"elia", b:"jackie", t:"inner", side:"gold", lb:"티격태격", tx:"잔소리와 무시가 오간다. 그러면서 재키는 다친 자리를 엘리아 앞에서만 안 숨기고, 엘리아는 재키가 취해 잠들 때까지 안 나간다."},
+      {a:"adri", b:"mika", t:"inner", side:"ice", lb:"비즈니스적 존중", tx:"서로를 유일하게 계산이 되는 상대로 친다. 친해질 생각은 양쪽 다 없고, 그래서 이 팀에서 가장 오해가 적은 두 사람이다."},
+      {a:"adri", b:"maria", t:"inner", side:"ice", lb:"피곤한 동료", tx:"유능한 건 인정하는데 같이 있으면 지친다. 서로. 아드리엔은 마리아의 송출을 소음으로 듣고, 마리아는 아드리엔이 자기를 안 봐주는 걸 안다."},
+      {a:"maria", b:"mika", t:"inner", side:"ice", lb:"묘한 동질", tx:"한 명은 읽지 않기로 했고 한 명은 말하지 않기로 했다. 아무것도 요구하지 않아서 편한, 이 팀에서 제일 조용한 조합."},
+      {a:"jackie", b:"adri", t:"cross", lb:"설전", tx:"붙었다 하면 말싸움. 이기는 쪽은 늘 아드리엔이고, 재키는 진 걸 인정하는 대신 다음 판을 건다."},
+      {a:"jackie", b:"maria", t:"cross", lb:"카오스 듀오", tx:"사고 치는 속도가 같다. 수습은 둘 다 안 한다. 팀에서 가장 웃기고 가장 비싼 조합."},
+      {a:"jackie", b:"mika", t:"cross", lb:"조용한 수습", tx:"재키가 벌여놓은 걸 미케일라가 말없이 정리한다. 생색도 잔소리도 없어서 재키는 자기 뒤가 치워진 줄 모를 때가 많고, 미케일라는 굳이 알리지 않는다."},
+      {a:"elia", b:"adri", t:"cross", lb:"다른 결의 통제광", tx:"통제하려는 대상만 다를 뿐 방식은 같다. 엘리아는 몸을, 아드리엔은 판을 붙잡는다. 서로를 알아보기 때문에 서로를 싫어한다."},
+      {a:"elia", b:"maria", t:"cross", lb:"조용한 케어와 어리광", tx:"마리아가 갑옷을 잠깐 내려놓는 유일한 자리. 엘리아는 묻지 않고 받아주고, 대신 허락 없이는 손대지 않는다."},
+      {a:"elia", b:"mika", t:"cross", lb:"조용한 이해", tx:"말이 필요 없는 쪽끼리. 미케일라는 이미 준비해두고, 엘리아는 왜 준비했는지 묻지 않는다."},
+      {a:"kayla", b:"adri", t:"cross", lb:"알파 충돌", tx:"둘 다 판을 장악하고 책임을 떠안는 타입이라 판단 우선순위와 지휘권이 자주 부딪힌다."},
+      {a:"kayla", b:"maria", t:"cross", lb:"보호적 캡틴", tx:"케일라는 마리아를 전투원으로 신뢰하면서도 위험선에서는 먼저 챙긴다. 보호와 지휘가 한 덩어리로 움직이는 관계."},
+      {a:"kayla", b:"mika", t:"cross", lb:"무언의 신뢰", tx:"길게 확인하지 않아도 서로의 판단을 믿는다. 지시와 보고가 짧아도 전투에서는 빈틈이 거의 없다."},
+      {a:"victor", b:"kayla", t:"outer", lb:"전 상관", tx:"케일라의 옛 상관. 이탈 이유를 케일라는 \"질렸다\"로만 말했고 빅터는 더 묻지 않았다. 지금 남은 건 서류와 절차뿐이다."},
+      {a:"victor", b:"jackie", t:"outer", lb:"계약에 대한 대가 미지급", tx:"싸움꾼 시절 재키의 딜러 등록비를 대준 사람. 조건은 날짜도 내용도 없는 1회 청구, 아직 안 왔다. 재키가 내일을 안 세는 이유이자 농담처럼 말해서 아무도 심각하게 안 듣는 이야기."},
+      {a:"victor", b:"cass", t:"outer", lb:"장부 밖", tx:"업어 키운 아이가 상관이 됐다. 계약으로 다 묶는 빅터에게 이 관계만 문서가 없고, 다 계산하는 카시언에게 이 관계만 장부 밖이다. 둘 다 애정이라 부르지 않는다."},
+      {a:"cass", b:"sera", t:"outer", lb:"남매", tx:"카시언과 세라핀은 친남매다."},
+      {a:"cass", b:"mika", t:"outer", lb:"안 끝난 거래", tx:"브로커 시절의 최대 고객. 거래 장소는 프리몬트 노상 체스판이었고, 판에서 나간 정보로 사람이 죽었다. 카시언은 마주치면 값부터 부르고 미케일라는 거절 대신 값을 듣는다. 팀은 모른다."},
+      {a:"sera", b:"maria", t:"outer", lb:"마지막으로 읽은 사람", tx:"유년기 하우스 훈련장의 짝. 마리아가 읽은 세라핀 안쪽엔 기도문 말고 아무것도 없었다. 그날 이후 마리아는 아무도 읽지 않고, 세라핀은 그날을 계시로 기억한다."},
+      {a:"luca", b:"elia", t:"outer", lb:"동지와 환자", tx:"등록을 묻지 않고 치료해준 유일한 딜러. 루카에겐 같은 편이고 엘리아에겐 환자다. 환자로 둬야 잃어도 견딘다."},
+      {a:"luca", b:"kayla", t:"outer", lb:"갚는 방식이 시비", tx:"형이 죽은 밤, 당시 하우스 소속이던 케일라가 루카를 살렸다. 루카는 고맙다는 말 대신 시비를 걸고, 케일라는 그걸 그냥 받아준다."}
+    ];
+
+    const relationById = Object.fromEntries(RELATION_NODES.map(node => [node.id, node]));
+    const relationNS = "http://www.w3.org/2000/svg";
+    let relationPinned = null;
+
+    const clearRelationLight = () => {
+      relationStage.classList.remove("picking");
+      $$(".relation-card", relationStage).forEach(card => card.classList.remove("lit", "pick"));
+      RELATION_EDGES.forEach(edge => {
+        edge.el?.classList.remove("lit");
+        edge.tag?.classList.remove("show");
+      });
+    };
+
+    const lightRelationNode = id => {
+      clearRelationLight();
+      relationStage.classList.add("picking");
+      $(`.relation-card[data-id="${id}"]`, relationStage)?.classList.add("pick");
+      RELATION_EDGES.forEach(edge => {
+        if (edge.a !== id && edge.b !== id) return;
+        edge.el.classList.add("lit");
+        edge.tag.classList.add("show");
+        const other = edge.a === id ? edge.b : edge.a;
+        $(`.relation-card[data-id="${other}"]`, relationStage)?.classList.add("lit");
+      });
+    };
+
+    const lightRelationEdge = index => {
+      clearRelationLight();
+      relationStage.classList.add("picking");
+      const edge = RELATION_EDGES[index];
+      edge.el.classList.add("lit");
+      edge.tag.classList.add("show");
+      [edge.a, edge.b].forEach(id => $(`.relation-card[data-id="${id}"]`, relationStage)?.classList.add("lit"));
+    };
+
+    const bindRelationLinks = () => {
+      $$('[data-relation-edge]', relationPanel).forEach(button => button.addEventListener("click", () => pickRelationEdge(+button.dataset.relationEdge)));
+      $$('[data-relation-node]', relationPanel).forEach(button => button.addEventListener("click", () => pickRelationNode(button.dataset.relationNode)));
+    };
+
+    const pickRelationNode = id => {
+      relationPinned = `n${id}`;
+      lightRelationNode(id);
+      const node = relationById[id];
+      const rels = RELATION_EDGES.map((edge, index) => ({edge, index})).filter(({edge}) => edge.a === id || edge.b === id);
+      relationPanel.innerHTML = `
+        <div class="relation-panel-left">
+          <p class="relation-panel-tag">${node.outer ? "Outside the six" : "Six Spirits"}</p>
+          <h3 class="relation-panel-name">${node.nm}</h3>
+          <p class="relation-panel-en">${node.en}</p>
+          <div class="relation-panel-meta">
+            <div><b>콜사인</b>${node.cs}</div>
+            <div><b>역할</b>${node.rl}</div>
+            <div><b>능력</b>${node.pw}</div>
+            <div><b>랭크</b>${node.rk}</div>
+          </div>
+        </div>
+        <div class="relation-panel-body">
+          <div class="relation-links relation-links-primary">${rels.map(({edge,index}) => {
+            const other = relationById[edge.a === id ? edge.b : edge.a];
+            return `<button class="relation-link${edge.t === "outer" ? " o" : ""}" data-relation-edge="${index}">${other.nm.split(" ")[0]} · ${edge.lb}</button>`;
+          }).join("")}</div>
+        </div>`;
+      bindRelationLinks();
+    };
+
+    const pickRelationEdge = index => {
+      relationPinned = `e${index}`;
+      lightRelationEdge(index);
+      const edge = RELATION_EDGES[index];
+      const A = relationById[edge.a];
+      const B = relationById[edge.b];
+      relationPanel.innerHTML = `
+        <div class="relation-panel-left">
+          <p class="relation-panel-tag">${edge.t === "outer" ? "Outside the six" : edge.t === "cross" ? "Across the split" : "Same trio"}</p>
+          <h3 class="relation-panel-name">${A.nm.split(" ")[0]}<br>× ${B.nm.split(" ")[0]}</h3>
+          <p class="relation-panel-en">${edge.lb}</p>
+        </div>
+        <div class="relation-panel-body">
+          <p>${edge.tx}</p>
+          <div class="relation-links">
+            <button class="relation-link" data-relation-node="${A.id}">${A.nm.split(" ")[0]} 전체 관계</button>
+            <button class="relation-link" data-relation-node="${B.id}">${B.nm.split(" ")[0]} 전체 관계</button>
+          </div>
+        </div>`;
+      bindRelationLinks();
+    };
+
+    const resetRelationMap = () => {
+      relationPinned = null;
+      clearRelationLight();
+      relationPanel.innerHTML = `
+        <div class="relation-panel-left">
+          <p class="relation-panel-tag">How to read this</p>
+          <p class="relation-panel-en">Six Spirits ／ Cash Out</p>
+        </div>
+        <div class="relation-panel-body">
+          <p class="relation-panel-lead">버번 트리오 ↔ 보드카 트리오</p>
+          <p><strong>일상에서는 미스매치. 전투에서는 단일팀.</strong> 굵은 실선은 같은 트리오, 가는 실선은 두 트리오를 넘나드는 개인 관계, 점선은 팀 밖에서 걸린 빚과 계약이다.</p>
+          <div class="relation-links">${RELATION_NODES.filter(node => !node.outer).map(node => `<button class="relation-link" data-relation-node="${node.id}">${node.nm.split(" ")[0]}</button>`).join("")}</div>
+        </div>`;
+      bindRelationLinks();
+    };
+
+    RELATION_NODES.forEach(node => {
+      const card = document.createElement("button");
+      card.type = "button";
+      card.className = `relation-card${node.side === "ice" ? " ice" : ""}${node.outer ? " outer" : ""}`;
+      card.style.left = `${node.x}%`;
+      card.style.top = `${node.y}%`;
+      card.dataset.id = node.id;
+      card.setAttribute("aria-label", `${node.nm} 관계 보기`);
+      card.innerHTML = `
+        <span class="relation-pip">${node.outer ? "✦" : node.side === "ice" ? "♣" : "♠"}</span>
+        <span class="relation-shot"><span class="relation-ghost">${node.nm[0]}</span><img src="${node.img}" alt="" loading="lazy"></span>
+        <span class="relation-nm">${node.nm.split(" ")[0]}</span>
+        <span class="relation-rl">${node.rl}</span>`;
+      $("img", card)?.addEventListener("error", event => event.currentTarget.classList.add("fail"));
+      card.addEventListener("click", event => { event.stopPropagation(); pickRelationNode(node.id); });
+      card.addEventListener("mouseenter", () => { if (!relationPinned) lightRelationNode(node.id); });
+      card.addEventListener("mouseleave", () => { if (!relationPinned) clearRelationLight(); });
+      relationStage.appendChild(card);
+
+      const rosterButton = document.createElement("button");
+      rosterButton.type = "button";
+      rosterButton.className = `${node.side === "ice" ? "ice" : ""}${node.outer ? " o" : ""}`;
+      rosterButton.innerHTML = `<img src="${node.img}" alt="" loading="lazy"><span class="relation-nm">${node.nm.split(" ")[0]}</span><span class="relation-rl">${node.rl}</span>`;
+      $("img", rosterButton)?.addEventListener("error", event => event.currentTarget.classList.add("fail"));
+      rosterButton.addEventListener("click", () => pickRelationNode(node.id));
+      relationRoster.appendChild(rosterButton);
+    });
+
+    const relationPoint = id => ({x: relationById[id].x * 12, y: relationById[id].y * 8.2});
+    RELATION_EDGES.forEach((edge, index) => {
+      const A = relationPoint(edge.a);
+      const B = relationPoint(edge.b);
+      let d;
+      if (edge.t === "outer") {
+        const mx = (A.x + B.x) / 2;
+        const my = (A.y + B.y) / 2;
+        const dx = B.x - A.x;
+        const dy = B.y - A.y;
+        const len = Math.hypot(dx, dy) || 1;
+        const bow = edge.a === "victor" && edge.b === "cass" ? 120 : 62;
+        d = `M${A.x} ${A.y} Q${mx + (-dy / len) * bow} ${my + (dx / len) * bow} ${B.x} ${B.y}`;
+      } else {
+        d = `M${A.x} ${A.y} L${B.x} ${B.y}`;
+      }
+
+      const path = document.createElementNS(relationNS, "path");
+      path.setAttribute("d", d);
+      path.setAttribute("class", `${edge.t}${edge.side === "ice" ? " ice" : ""}`);
+      path.dataset.i = index;
+      const hit = document.createElementNS(relationNS, "path");
+      hit.setAttribute("d", d);
+      hit.setAttribute("class", "hit");
+      hit.dataset.i = index;
+      relationWires.append(path, hit);
+      edge.el = path;
+
+      const mid = path.getTotalLength ? path.getPointAtLength(path.getTotalLength() / 2) : {x:(A.x+B.x)/2, y:(A.y+B.y)/2};
+      const tag = document.createElement("div");
+      tag.className = "relation-tag";
+      tag.textContent = edge.lb;
+      tag.style.left = `${mid.x / 1200 * 100}%`;
+      tag.style.top = `${mid.y / 820 * 100}%`;
+      relationStage.appendChild(tag);
+      edge.tag = tag;
+
+      [path, hit].forEach(el => {
+        el.addEventListener("click", event => { event.stopPropagation(); pickRelationEdge(index); });
+        el.addEventListener("mouseenter", () => { if (!relationPinned) lightRelationEdge(index); });
+        el.addEventListener("mouseleave", () => { if (!relationPinned) clearRelationLight(); });
+      });
+    });
+
+    relationStage.addEventListener("click", resetRelationMap);
+    resetRelationMap();
+  }
 
 
   // Factions + Characters (merged)

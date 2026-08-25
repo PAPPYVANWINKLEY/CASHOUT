@@ -11,7 +11,7 @@
   <meta property="og:site_name" content="SIX SPIRITS" />
   <meta property="og:title" content="SIX SPIRITS — CASHOUT NIGHT / 식스 스피릿츠" />
   <meta property="og:description" content="하우스는 언제나 승리한다. 본인들이 만든 문구니까 그렇다 치자. 프루프의 여섯 딜러가 버티는 여섯 시간짜리 합법 사냥." />
-  <meta property="og:image" content="https://i.cpvw.uk/6SC/og-cover-v2.png" />
+  <meta property="og:image" content="https://i.cpvw.uk/6SC/og-cover-v3.png" />
   <meta property="og:image:type" content="image/png" />
   <meta property="og:image:width" content="1750" />
   <meta property="og:image:height" content="500" />
@@ -20,9 +20,10 @@
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="SIX SPIRITS — CASHOUT NIGHT / 식스 스피릿츠" />
   <meta name="twitter:description" content="하우스는 언제나 승리한다. 오늘 밤까지도 그런지는 두고 보자." />
-  <meta name="twitter:image" content="https://i.cpvw.uk/6SC/og-cover-v2.png" />
+  <meta name="twitter:image" content="https://i.cpvw.uk/6SC/og-cover-v3.png" />
   <title>SIX SPIRITS — Cashout Night / 식스 스피릿츠</title>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="preload" as="image" href="og-cover-v3.png" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -47,6 +48,7 @@
   <nav class="site-nav" id="site-nav" aria-label="주요 메뉴">
     <a href="#world">WORLD / 세계관</a>
     <a href="#factions">FACTIONS / 세력</a>
+    <a href="#relations">RELATIONS / 관계도</a>
     <a href="#soundtrack">BGM / 음악</a>
     <a href="#ability-generator">ABILITY DRAW / 능력 뽑기</a>
     <a href="#gallery">GALLERY / 갤러리</a>
@@ -201,10 +203,44 @@
       </div>
     </section>
 
+    <section class="relations-section section-block" id="relations" aria-labelledby="relations-title">
+      <div class="section-shell">
+        <div class="section-heading horizontal reveal relations-heading">
+          <div>
+            <p class="eyebrow">03 · RELATION MAP / 관계도</p>
+            <h2 id="relations-title">EVERYBODY<br>HAS A LINE.</h2>
+          </div>
+          <p>여섯은 한 팀이고, 한 팀인 적은 없다. 카드를 누르면 그 사람의 사정이, 선을 누르면 두 사람 사이가 열린다.</p>
+        </div>
+
+        <div class="relation-map-shell reveal">
+          <div class="relation-legend" aria-label="관계선 범례">
+            <span><i></i>같은 트리오</span>
+            <span><i class="ice"></i>보드카 트리오</span>
+            <span><i class="thin"></i>트리오 교차</span>
+            <span><i class="dash"></i>팀 밖</span>
+          </div>
+
+          <div class="relation-board">
+            <div class="relation-stage" id="relationStage">
+              <div class="relation-seam"></div>
+              <div class="relation-seam-tag top">유대 · 수성 ／ 개인주의 · 공세</div>
+              <div class="relation-seam-tag bot">일상 = 미스매치 ／ 전투 = 단일팀</div>
+              <svg class="relation-wires" id="relationWires" viewBox="0 0 1200 820" preserveAspectRatio="none" aria-hidden="true"></svg>
+            </div>
+          </div>
+          <p class="relation-scrollhint">← 좌우로 밀어 보드 전체 보기 →</p>
+
+          <div class="relation-roster" id="relationRoster" aria-label="관계도 인물 목록"></div>
+          <div class="relation-panel" id="relationPanel" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+
     <section class="soundtrack-section section-block" id="soundtrack" aria-labelledby="soundtrack-title">
       <div class="section-shell soundtrack-layout">
         <div class="section-heading reveal">
-          <p class="eyebrow">03 · BGM ARCHIVE / 음악 아카이브</p>
+          <p class="eyebrow">04 · BGM ARCHIVE / 음악 아카이브</p>
           <h2 id="soundtrack-title">SOUNDTRACK<br>FOR THE HUNT.</h2>
           <p id="soundtrackIntro">사람이 죽고 도시가 불타도 BGM은 필요하다. 분위기는 죄가 없으니까.</p>
         </div>
@@ -233,7 +269,7 @@
     <section class="ability-section section-block" id="ability-generator" aria-labelledby="ability-title">
       <div class="section-shell">
         <div class="section-heading horizontal reveal">
-          <div><p class="eyebrow">04 · ABILITY DRAW / 능력 뽑기</p><h2 id="ability-title">DRAW YOUR<br>SIGIL.</h2></div>
+          <div><p class="eyebrow">05 · ABILITY DRAW / 능력 뽑기</p><h2 id="ability-title">DRAW YOUR<br>SIGIL.</h2></div>
           <p id="abilityIntro">문양을 고르거나 그냥 운명에 맡기세요. 능력은 랜덤, 제약은 기본 옵션, 버스트 위험은 환불 불가입니다.</p>
         </div>
 
@@ -279,7 +315,7 @@
 
     <section class="section-shell section-block" id="gallery" aria-labelledby="gallery-title">
       <div class="section-heading horizontal reveal">
-        <div><p class="eyebrow">05 · GALLERY / 갤러리</p><h2 id="gallery-title">EVIDENCE<br>FROM THE NIGHT.</h2></div>
+        <div><p class="eyebrow">06 · GALLERY / 갤러리</p><h2 id="gallery-title">EVIDENCE<br>FROM THE NIGHT.</h2></div>
         <p id="galleryIntro">증거 사진 모음. 다들 살아 있을 때 찍힌 게 제일 보기 좋습니다. <br><span class='intro-note'>(일반 이미지만 수록. 언세이프 이미지는 언세이프 스토리 고정댓글 참조)</span></p>
       </div>
       <div class="gallery-grid" id="galleryGrid"></div>
