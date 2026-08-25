@@ -98,6 +98,30 @@
   }, { threshold: 0.12 });
   $$(".reveal").forEach(el => revealObserver.observe(el));
 
+  // Prologue webtoon: keep remote images visible even when index.html is opened via file://.
+  // Native lazy-loading + reveal transitions can delay/skip remote image paint in local previews,
+  // so the webtoon uses eager images and a one-time explicit retry on failure.
+  const initWebtoonImages = () => {
+    $$('[data-webtoon-src]').forEach(img => {
+      const note = img.closest('.webtoon-page')?.querySelector('.webtoon-load-note');
+      let retried = false;
+      const loaded = () => { if (note) note.hidden = true; };
+      const failed = () => {
+        if (!retried) {
+          retried = true;
+          const base = img.dataset.webtoonSrc;
+          img.src = `${base}${base.includes('?') ? '&' : '?'}v=20260825`;
+          return;
+        }
+        if (note) note.hidden = false;
+      };
+      img.addEventListener('load', loaded);
+      img.addEventListener('error', failed);
+      if (img.complete && img.naturalWidth > 0) loaded();
+    });
+  };
+  initWebtoonImages();
+
   // Active nav section
   const navLinks = $$(".site-nav a");
   const sectionObserver = new IntersectionObserver(entries => {
