@@ -2902,3 +2902,229 @@ body.gated .scroll-cue { display: none; }
   .relation-tag,
   .relation-link { transition: none !important; }
 }
+
+/* ============================================================
+   PRE-HISTORY — chronological novel reader
+   ============================================================ */
+.prehistory-section {
+  position: relative;
+  background:
+    radial-gradient(circle at 12% 10%, rgba(210,174,99,.07), transparent 26%),
+    linear-gradient(180deg, #0a080b 0%, #0f0b0e 52%, #08070a 100%);
+  border-top: 1px solid rgba(210,174,99,.09);
+  border-bottom: 1px solid rgba(210,174,99,.09);
+}
+.prehistory-heading { margin-bottom: 38px; }
+.prehistory-reader {
+  overflow: hidden;
+  border: 1px solid var(--line-gold);
+  background: rgba(10,8,11,.88);
+  box-shadow: 0 30px 90px rgba(0,0,0,.34);
+}
+.prehistory-tabs {
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  border-bottom: 1px solid var(--line-gold);
+  background: rgba(255,255,255,.018);
+}
+.prehistory-tabs button {
+  flex: 0 0 auto;
+  min-height: 52px;
+  padding: 0 18px;
+  border: 0;
+  border-right: 1px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .12em;
+  white-space: nowrap;
+  transition: color .2s, background .2s, box-shadow .2s;
+}
+.prehistory-tabs button:hover,
+.prehistory-tabs button:focus-visible {
+  color: var(--ink);
+  background: rgba(210,174,99,.055);
+}
+.prehistory-tabs button.active {
+  color: var(--gold);
+  background: rgba(210,174,99,.09);
+  box-shadow: inset 0 -2px 0 var(--gold);
+}
+.prehistory-tabs .now-tab.active {
+  color: #fff1e9;
+  background: rgba(186,36,53,.18);
+  box-shadow: inset 0 -2px 0 var(--red-bright);
+}
+.prehistory-panels { min-height: 580px; }
+.prehistory-panel {
+  width: min(820px, calc(100% - 64px));
+  margin: 0 auto;
+  padding: 58px 0 68px;
+  color: #ddd4ca;
+  font-family: "KoPub Batang", "Noto Serif KR", "Nanum Myeongjo", serif;
+  font-size: clamp(15px, 1.25vw, 17px);
+  line-height: 2.02;
+  letter-spacing: -.012em;
+}
+.prehistory-panel[hidden] { display: none; }
+.prehistory-panel h3 {
+  margin: 12px 0 30px;
+  color: var(--ink);
+  font-family: Pretendard, "Noto Sans KR", Inter, sans-serif;
+  font-size: clamp(25px, 3.3vw, 42px);
+  font-weight: 800;
+  line-height: 1.3;
+  letter-spacing: -.035em;
+}
+.prehistory-panel p { margin: 0; }
+.prehistory-panel p + p { margin-top: 1.15em; }
+.prehistory-panel strong { color: #f1e8dc; }
+.prehistory-kicker {
+  color: var(--gold) !important;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+.prehistory-pull {
+  margin: 30px 0 !important;
+  padding: 18px 0 18px 22px;
+  border-left: 2px solid var(--red-bright);
+  color: #f1e8dc;
+  font-family: Pretendard, "Noto Sans KR", Inter, sans-serif;
+  font-size: clamp(18px, 2vw, 24px);
+  font-weight: 800;
+  line-height: 1.55;
+}
+.now-scene-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  align-items: center;
+  margin-bottom: 18px;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 9px;
+  letter-spacing: .1em;
+}
+.now-scene-meta span,
+.now-scene-meta b,
+.now-scene-meta a {
+  padding: 7px 9px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,.02);
+  color: var(--muted);
+  font-weight: 700;
+}
+.now-scene-meta span { color: var(--gold); border-color: var(--line-gold); }
+.now-scene-meta a { color: var(--gold); }
+.now-scene-meta a:hover { border-color: var(--gold); }
+.now-scene-hero {
+  margin: 0 0 34px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: #050405;
+}
+.now-scene-hero img {
+  width: 100%;
+  max-height: 460px;
+  object-fit: cover;
+  object-position: center;
+}
+.now-dialogue {
+  display: grid;
+  grid-template-columns: 130px minmax(0,1fr);
+  gap: 20px;
+  align-items: stretch;
+  margin: 28px 0;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,.018);
+  font-family: Pretendard, "Noto Sans KR", Inter, sans-serif;
+}
+.now-dialogue > img {
+  width: 100%;
+  height: 100%;
+  min-height: 150px;
+  object-fit: cover;
+  object-position: center top;
+}
+.now-dialogue > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 18px 22px;
+}
+.now-dialogue b {
+  color: var(--gold);
+  font-size: 10px;
+  letter-spacing: .14em;
+}
+.now-dialogue p {
+  margin: 7px 0 2px;
+  color: var(--ink);
+  font-size: clamp(16px, 1.8vw, 21px);
+  font-weight: 800;
+  line-height: 1.45;
+}
+.now-dialogue small { color: var(--muted); font-size: 12px; line-height: 1.6; }
+.now-dialogue.text-only { grid-template-columns: 1fr; }
+.now-dialogue.text-only > div { padding: 20px 22px; }
+
+/* ============================================================
+   PROLOGUE — vertical webtoon reader
+   ============================================================ */
+.prologue-section {
+  background: #050405;
+  border-bottom: 1px solid var(--line);
+}
+.prologue-heading { margin-bottom: 38px; }
+.webtoon-frame {
+  width: min(980px, 100%);
+  margin: 0 auto;
+  overflow: hidden;
+  border: 1px solid var(--line-gold);
+  background: #000;
+  box-shadow: 0 30px 100px rgba(0,0,0,.58);
+}
+.webtoon-frame a { display: block; }
+.webtoon-frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: none;
+}
+.webtoon-frame a + a { margin-top: 0; }
+
+@media (min-width: 981px) {
+  .site-nav { gap: clamp(9px, 1.35vw, 20px); }
+  .site-nav a { font-size: 9.5px; letter-spacing: .10em; white-space: nowrap; }
+}
+
+@media (max-width: 760px) {
+  .prehistory-heading,
+  .prologue-heading { margin-bottom: 24px; }
+  .prehistory-panel {
+    width: calc(100% - 34px);
+    padding: 38px 0 46px;
+    font-size: 14.5px;
+    line-height: 1.92;
+  }
+  .prehistory-tabs button { min-height: 48px; padding-inline: 14px; font-size: 8.5px; }
+  .prehistory-panel h3 { margin-bottom: 24px; font-size: clamp(24px, 7vw, 34px); }
+  .now-scene-hero img { max-height: 330px; }
+  .now-dialogue { grid-template-columns: 92px minmax(0,1fr); gap: 0; }
+  .now-dialogue > div { padding: 14px 15px; }
+  .now-dialogue p { font-size: 15px; }
+  .now-dialogue small { font-size: 11px; }
+}
+
+@media (max-width: 480px) {
+  .now-dialogue { grid-template-columns: 1fr; }
+  .now-dialogue > img { height: 260px; min-height: 0; }
+  .now-scene-meta { gap: 6px; }
+}

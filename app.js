@@ -106,11 +106,44 @@
       navLinks.forEach(link => link.classList.toggle("active", link.getAttribute("href") === `#${entry.target.id}`));
     });
   }, { rootMargin: "-35% 0px -55% 0px" });
-  ["world", "factions", "relations", "soundtrack", "ability-generator", "gallery"].forEach(id => {
+  ["prehistory", "prologue", "world", "factions", "relations", "soundtrack", "ability-generator", "gallery"].forEach(id => {
     const section = document.getElementById(id);
     if (section) sectionObserver.observe(section);
   });
 
+
+  // Pre-history chronology tabs
+  const prehistoryTabs = $$("[data-prehistory-tab]");
+  const prehistoryPanels = $$(".prehistory-panel");
+  if (prehistoryTabs.length && prehistoryPanels.length) {
+    const activatePrehistoryTab = (targetId, focus = false) => {
+      prehistoryTabs.forEach(button => {
+        const active = button.dataset.prehistoryTab === targetId;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-selected", String(active));
+        button.tabIndex = active ? 0 : -1;
+        if (active && focus) button.focus({ preventScroll: true });
+      });
+      prehistoryPanels.forEach(panel => {
+        panel.hidden = panel.id !== targetId;
+      });
+    };
+
+    prehistoryTabs.forEach((button, index) => {
+      button.addEventListener("click", () => activatePrehistoryTab(button.dataset.prehistoryTab));
+      button.addEventListener("keydown", event => {
+        if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
+        event.preventDefault();
+        let next = index;
+        if (event.key === "ArrowLeft") next = (index - 1 + prehistoryTabs.length) % prehistoryTabs.length;
+        if (event.key === "ArrowRight") next = (index + 1) % prehistoryTabs.length;
+        if (event.key === "Home") next = 0;
+        if (event.key === "End") next = prehistoryTabs.length - 1;
+        activatePrehistoryTab(prehistoryTabs[next].dataset.prehistoryTab, true);
+      });
+    });
+    activatePrehistoryTab(prehistoryTabs.find(button => button.classList.contains("active"))?.dataset.prehistoryTab || prehistoryTabs[0].dataset.prehistoryTab);
+  }
 
   // Relationship map — embedded directly into the main page.
   // Portraits use the named thumbnail files (Kayla.png, Jackie.png, etc.),
@@ -1678,7 +1711,7 @@
       document.body.classList.add("entered");
 
       // ?bgm= 로 들어온 방문자는 해당 트랙 앞으로, 그 외에는 빠른 요약으로.
-      const target = deepLinkIndex >= 0 ? $("#soundtrack") : $("#quick-brief");
+      const target = deepLinkIndex >= 0 ? $("#soundtrack") : $("#prehistory");
       if (target) {
         const headerH = ($(".site-header") || {}).offsetHeight || 64;
         const tickerH = ($(".ticker") || {}).offsetHeight || 0;
