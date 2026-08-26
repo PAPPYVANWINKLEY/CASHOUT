@@ -179,12 +179,12 @@
 
   if (relationStage && relationWires && relationPanel && relationRoster) {
     const RELATION_NODES = [
-      {id:"kayla", nm:"케일라 워커", en:"Kayla Walker", rl:"리더", cs:"버팔로 트레이스", pw:"♠ 중력부여", rk:"플래티넘", side:"gold", x:29, y:21, img:"https://i.cpvw.uk/6SC/Kayla.png"},
-      {id:"jackie", nm:"재키 분", en:"Jackie Boone", rl:"브리쳐", cs:"와일드 터키", pw:"♦ 폭발에너지주입", rk:"골드", side:"gold", x:20, y:53, img:"https://i.cpvw.uk/6SC/Jackie.png"},
-      {id:"elia", nm:"엘리아 머서", en:"Eliana Mercer", rl:"메딕", cs:"메이커스 마크", pw:"♥ 생체감응", rk:"실버", side:"gold", x:32, y:83, img:"https://i.cpvw.uk/6SC/Elia.png"},
-      {id:"adri", nm:"아드리엔 로랑", en:"Adrienne Laurent", rl:"전략가", cs:"그레이 구스", pw:"♣ 확률간섭", rk:"플래티넘", side:"ice", x:71, y:21, img:"https://i.cpvw.uk/6SC/Adrien.png"},
-      {id:"mika", nm:"미케일라 코왈스키", en:"Mikaela Kowalski", rl:"저격", cs:"벨베디어", pw:"♠ 스나이핑", rk:"골드", side:"ice", x:80, y:53, img:"https://i.cpvw.uk/6SC/Mikaela.png"},
-      {id:"maria", nm:"마리아 킹", en:"Maria King", rl:"침투·대외", cs:"씨락", pw:"♥ 감정주파수", rk:"골드", side:"ice", x:68, y:83, img:"https://i.cpvw.uk/6SC/Maria.png"},
+      {id:"kayla", nm:"케일라 워커", en:"Kayla Walker", rl:"리더", cs:"맨해튼", pw:"♠ 중력부여", rk:"플래티넘", side:"gold", x:29, y:21, img:"https://i.cpvw.uk/6SC/Kayla.png"},
+      {id:"jackie", nm:"재키 분", en:"Jackie Boone", rl:"브리쳐", cs:"허리케인", pw:"♦ 폭발에너지주입", rk:"골드", side:"gold", x:20, y:53, img:"https://i.cpvw.uk/6SC/Jackie.png"},
+      {id:"elia", nm:"엘리아 머서", en:"Eliana Mercer", rl:"메딕", cs:"김렛", pw:"♥ 생체감응", rk:"실버", side:"gold", x:32, y:83, img:"https://i.cpvw.uk/6SC/Elia.png"},
+      {id:"adri", nm:"아드리엔 로랑", en:"Adrienne Laurent", rl:"전략가", cs:"프렌치75", pw:"♣ 확률간섭", rk:"플래티넘", side:"ice", x:71, y:21, img:"https://i.cpvw.uk/6SC/Adrien.png"},
+      {id:"mika", nm:"미케일라 코왈스키", en:"Mikaela Kowalski", rl:"저격", cs:"실버불릿", pw:"♠ 스나이핑", rk:"골드", side:"ice", x:80, y:53, img:"https://i.cpvw.uk/6SC/Mikaela.png"},
+      {id:"maria", nm:"마리아 킹", en:"Maria King", rl:"침투·대외", cs:"베스퍼", pw:"♥ 감정주파수", rk:"골드", side:"ice", x:68, y:83, img:"https://i.cpvw.uk/6SC/Maria.png"},
       {id:"victor", nm:"빅터 셰인", en:"Victor Shane", rl:"더 렛저 집행국장", cs:"클로저", pw:"♣ 계약기반언령", rk:"다이아몬드", side:"out", x:6, y:10, outer:true, img:"https://i.cpvw.uk/6SC/Victor.png"},
       {id:"cass", nm:"카시언 크로우", en:"Cassian Crow", rl:"하우스 총괄", cs:"뱅커", pw:"♥ 어웨이크닝", rk:"다이아몬드", side:"out", x:94, y:10, outer:true, img:"https://i.cpvw.uk/6SC/Cassian.png"},
       {id:"luca", nm:"루카 헤일", en:"Luca Hale", rl:"언컷 운반책", cs:"스파크", pw:"♦ 열분해", rk:"미등록", side:"out", x:6, y:90, outer:true, img:"https://i.cpvw.uk/6SC/Luca.png"},
@@ -200,7 +200,7 @@
       {a:"maria", b:"mika", t:"inner", side:"ice", lb:"묘한 동질", tx:"한 명은 읽지 않기로 했고 한 명은 말하지 않기로 했다. 아무것도 요구하지 않아서 편한, 이 팀에서 제일 조용한 조합."},
       {a:"jackie", b:"adri", t:"cross", lb:"설전", tx:"붙었다 하면 말싸움. 이기는 쪽은 늘 아드리엔이고, 재키는 진 걸 인정하는 대신 다음 판을 건다."},
       {a:"jackie", b:"maria", t:"cross", lb:"카오스 듀오", tx:"사고 치는 속도가 같다. 수습은 둘 다 안 한다. 팀에서 가장 웃기고 가장 비싼 조합."},
-      {a:"jackie", b:"mika", t:"cross", lb:"조용한 수습", tx:"재키가 벌여놓은 걸 미케일라가 말없이 정리한다. 생색도 잔소리도 없어서 재키는 자기 뒤가 치워진 줄 모를 때가 많고, 미케일라는 굳이 알리지 않는다."},
+      {a:"jackie", b:"mika", t:"cross", lb:"언니 같은 동생", tx:"세 살 어린 미케일라가 오히려 언니처럼 재키의 뒤를 챙긴다. 재키가 사고를 벌이면 미케일라는 말없이 빈틈을 메우고, 재키는 그 조용한 뒷배를 당연하다는 듯 믿는다."},
       {a:"elia", b:"adri", t:"cross", lb:"다른 결의 통제광", tx:"통제하려는 대상만 다를 뿐 방식은 같다. 엘리아는 몸을, 아드리엔은 판을 붙잡는다. 서로를 알아보기 때문에 서로를 싫어한다."},
       {a:"elia", b:"maria", t:"cross", lb:"조용한 케어와 어리광", tx:"마리아가 갑옷을 잠깐 내려놓는 유일한 자리. 엘리아는 묻지 않고 받아주고, 대신 허락 없이는 손대지 않는다."},
       {a:"elia", b:"mika", t:"cross", lb:"조용한 이해", tx:"말이 필요 없는 쪽끼리. 미케일라는 이미 준비해두고, 엘리아는 왜 준비했는지 묻지 않는다."},
@@ -314,8 +314,8 @@
           <p class="relation-panel-en">Six Spirits ／ Cash Out</p>
         </div>
         <div class="relation-panel-body">
-          <p class="relation-panel-lead">버번 트리오 ↔ 보드카 트리오</p>
-          <p><strong>일상에서는 미스매치. 전투에서는 단일팀.</strong> 굵은 실선은 같은 트리오, 가는 실선은 두 트리오를 넘나드는 개인 관계, 점선은 팀 밖에서 걸린 빚과 계약이다.</p>
+          <p class="relation-panel-lead">온더락 ↔ 스트레이트업</p>
+          <p><strong>일상에서는 미스매치. 전투에서는 단일팀.</strong> 굵은 실선은 같은 팀, 가는 실선은 온더락과 스트레이트업을 넘나드는 개인 관계, 점선은 팀 밖에서 걸린 빚과 계약이다.</p>
           <div class="relation-links">${RELATION_NODES.filter(node => !node.outer).map(node => `<button class="relation-link" data-relation-node="${node.id}">${node.nm.split(" ")[0]}</button>`).join("")}</div>
         </div>`;
       bindRelationLinks();
